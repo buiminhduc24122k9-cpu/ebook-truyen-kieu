@@ -1025,6 +1025,11 @@
         justify-content: flex-start;
         padding: 0 8px;
         -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .storybook-footer::-webkit-scrollbar {
+        display: none;
       }
       .tab-jump-btn {
         flex-shrink: 0;
@@ -1032,8 +1037,7 @@
         padding: 4px 9px;
       }
       .stage-nav-arrow {
-        width: 36px;
-        height: 36px;
+        display: none !important;
       }
     }
 
@@ -1603,8 +1607,8 @@
         var bookW, bookH;
 
         if (isMobile) {
-          // Điện thoại: Hiển thị 1 trang to, rõ ràng, chiếm 94% chiều rộng
-          bookW = Math.min(winW * 0.94, 460);
+          // Điện thoại: Hiển thị 1 trang to, rõ ràng, chiếm 88% chiều rộng
+          bookW = Math.min(winW * 0.88, 380);
           bookH = Math.min(availableH, bookW * 1.48);
           bookW = Math.round(bookH / 1.48);
         } else {
@@ -1628,10 +1632,10 @@
       $flipbook.turn({
         width: dim.width,
         height: dim.height,
-        elevation: 50,
+        elevation: 350,
         gradients: true,
         autoCenter: true,
-        duration: 800,
+        duration: 600,
         acceleration: true,
         display: dim.isMobile ? 'single' : 'double'
       });
@@ -1705,6 +1709,58 @@
       $(document).on('keydown', function (e) {
         if (e.keyCode === 37) $flipbook.turn('previous'); // Mũi tên trái
         if (e.keyCode === 39) $flipbook.turn('next');     // Mũi tên phải
+      });
+
+      /* ---------------------------------------------------------------------
+         4B. HIỆU ỨNG HÉ MỞ GÓC SÁCH (PEEL) & NGHIÊNG 3D VẬT LÝ THEO CON TRỎ
+         --------------------------------------------------------------------- */
+      // Rê chuột vào góc sách để hé mở tự nhiên
+      $('.storybook-stage').on('mousemove', function (e) {
+        if (dim.isMobile) return;
+        var offset = $flipbook.offset();
+        if (!offset) return;
+        var x = e.pageX - offset.left;
+        var y = e.pageY - offset.top;
+        var w = $flipbook.width();
+        var h = $flipbook.height();
+
+        if (x > w * 0.82 && y > h * 0.78) {
+          if (!$flipbook.data('peeling')) {
+            $flipbook.data('peeling', true);
+            try { $flipbook.turn('peel', 'br'); } catch (err) {}
+          }
+        } else if (x < w * 0.18 && y > h * 0.78) {
+          if (!$flipbook.data('peeling')) {
+            $flipbook.data('peeling', true);
+            try { $flipbook.turn('peel', 'bl'); } catch (err) {}
+          }
+        } else {
+          if ($flipbook.data('peeling')) {
+            $flipbook.data('peeling', false);
+            try { $flipbook.turn('peel', false); } catch (err) {}
+          }
+        }
+      });
+
+      $('.storybook-stage').on('mouseleave', function () {
+        if ($flipbook.data('peeling')) {
+          $flipbook.data('peeling', false);
+          try { $flipbook.turn('peel', false); } catch (err) {}
+        }
+      });
+
+      // Hiệu ứng nghiêng 3D bàn đọc (Interactive 3D Desk Tilt)
+      $(document).on('mousemove', function (e) {
+        if (dim.isMobile) return;
+        var winW = $(window).width();
+        var winH = $(window).height();
+        var tiltX = (e.clientY / winH - 0.5) * -5;
+        var tiltY = (e.clientX / winW - 0.5) * 5;
+
+        $('.book-wrapper').css({
+          'transform': 'perspective(1400px) rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg)',
+          'transition': 'transform 0.1s ease-out'
+        });
       });
 
       /* ---------------------------------------------------------------------
