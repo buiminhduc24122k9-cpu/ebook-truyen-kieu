@@ -5,51 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>E-book 3D: Từ Kim Vân Kiều truyện đến Truyện Kiều | THPT Tây Thạnh</title>
 
-  <!-- Google Fonts: Playfair Display (Tiêu đề cổ điển), Lora (Thân bài sang trọng), Be Vietnam Pro (Giao diện chuẩn Việt), Alex Brush (Chữ ký/Thư pháp) -->
+  <!-- Google Fonts: Chuẩn mực xuất bản văn học cổ điển -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&display=swap" rel="stylesheet" />
 
-  <!-- StPageFlip Official Browser Library -->
-  <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+  <!-- jQuery & Turn.js: Thư viện lật sách 3D kinh điển, mượt mà, không bị vỡ/lệch hình -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
 
   <style>
     /* =========================================================================
-       1. HỆ THỐNG MÀU SẮC & THIẾT KẾ CẢO THƠM VĂN HỌC VIỆT NAM
+       1. BẢNG MÀU & THIẾT KẾ PHONG CÁCH GEMINI STORYBOOK ("BASIC MÀ SANG TRỌNG")
        ========================================================================= */
     :root {
-      --bg-desk-deep: #160d09;
-      --bg-desk-mid: #2a1912;
-      --bg-desk-warm: #42281c;
+      --bg-ambient: #f5f0e6;
+      --paper-cream: #faf5eb;
+      --paper-aged: #f4ecda;
+      --paper-card: #fffdfa;
 
-      --paper-cream: #faf4e8;
-      --paper-aged: #f3e9d2;
-      --paper-dark: #e8d7b7;
-
-      --ink-black: #1f1612;
-      --ink-deep: #2e211b;
-      --ink-muted: #5a463c;
-      --ink-light: #7c685b;
+      --ink-primary: #22150f;
+      --ink-body: #2f2119;
+      --ink-muted: #5e4c40;
+      --ink-light: #7e6b5e;
 
       --crimson-royal: #8d1c20;
       --crimson-deep: #681115;
-      --crimson-light: #b32a2f;
       --crimson-soft: rgba(141, 28, 32, 0.08);
 
       --gold-royal: #b68d40;
       --gold-light: #d8b772;
-      --gold-pale: #f0deb3;
-      --gold-soft: rgba(182, 141, 64, 0.15);
+      --gold-soft: rgba(182, 141, 64, 0.18);
 
-      --jade-deep: #23434d;
-      --jade-soft: rgba(35, 67, 77, 0.08);
+      --jade-deep: #244650;
+      --jade-soft: rgba(36, 70, 80, 0.08);
 
-      --font-display: 'Playfair Display', Georgia, serif;
+      --font-title: 'Playfair Display', Georgia, serif;
       --font-body: 'Lora', Georgia, serif;
       --font-ui: 'Be Vietnam Pro', -apple-system, sans-serif;
       --font-script: 'Alex Brush', cursive;
-
-      --shadow-book: 0 30px 70px rgba(0, 0, 0, 0.65), 0 10px 25px rgba(0, 0, 0, 0.45);
     }
 
     *, *::before, *::after {
@@ -62,18 +56,18 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: var(--bg-desk-deep);
+      background-color: var(--bg-ambient);
       font-family: var(--font-body);
-      color: var(--ink-black);
+      color: var(--ink-body);
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
       user-select: none;
     }
 
     /* =========================================================================
-       2. KHÔNG GIAN BÀN ĐỌC SÁCH CỔ ĐIỂN CÓ HOA VĂN TRỐNG ĐỒNG ĐÔNG SƠN
+       2. PHÔNG NỀN TRÌNH DIỄN (SÁNG SỦA, TINH TẾ, CÓ CHIỀU SÂU BÀN ĐỌC)
        ========================================================================= */
-    .reading-room {
+    .storybook-app {
       position: relative;
       width: 100vw;
       height: 100vh;
@@ -82,252 +76,185 @@
       justify-content: space-between;
       align-items: center;
       background:
-        radial-gradient(circle at 50% 50%, rgba(200, 145, 60, 0.12) 0%, rgba(55, 30, 20, 0.7) 60%, rgba(18, 9, 6, 0.96) 100%),
-        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 24px),
-        linear-gradient(135deg, #22140e 0%, #351f15 50%, #150b07 100%);
+        radial-gradient(ellipse at 50% 48%, rgba(255, 253, 248, 0.95) 0%, rgba(246, 238, 224, 0.9) 50%, rgba(228, 215, 194, 0.95) 100%),
+        repeating-linear-gradient(90deg, rgba(180, 140, 90, 0.03) 0px, rgba(180, 140, 90, 0.03) 1px, transparent 1px, transparent 40px),
+        #f4ece0;
       overflow: hidden;
     }
 
-    /* Họa tiết hoa văn trống đồng Đông Sơn in chìm sang trọng */
-    .bronze-drum-watermark {
+    /* Họa tiết Trống đồng Đông Sơn in chìm nhẹ nhàng */
+    .cultural-watermark {
       position: absolute;
       inset: 0;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.065;
+      opacity: 0.04;
       background-position: center center;
       background-repeat: no-repeat;
-      background-size: min(92vw, 92vh);
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23f5deb3' stroke-width='3'%3E%3Ccircle cx='400' cy='400' r='385' stroke-width='6'/%3E%3Ccircle cx='400' cy='400' r='365'/%3E%3Ccircle cx='400' cy='400' r='340' stroke-dasharray='12,6'/%3E%3Ccircle cx='400' cy='400' r='310' stroke-width='4'/%3E%3Ccircle cx='400' cy='400' r='270'/%3E%3Ccircle cx='400' cy='400' r='230' stroke-dasharray='8,5'/%3E%3Ccircle cx='400' cy='400' r='185' stroke-width='4'/%3E%3Ccircle cx='400' cy='400' r='140'/%3E%3Ccircle cx='400' cy='400' r='90'/%3E%3Ccircle cx='400' cy='400' r='40' fill='%23f5deb3' fill-opacity='0.2'/%3E%3Cpath d='M400,20 L400,780 M20,400 L780,400 M131,131 L669,669 M131,669 L669,131' stroke-width='1.5' stroke-dasharray='6,10'/%3E%3C/g%3E%3C/svg%3E");
-    }
-
-    /* Canvas bụi vàng & cánh hoa đào bay bổng lãng mạn */
-    #ambientCanvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 2;
+      background-size: min(85vw, 85vh);
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%238d1c20' stroke-width='4'%3E%3Ccircle cx='400' cy='400' r='380' stroke-width='8'/%3E%3Ccircle cx='400' cy='400' r='350' stroke-dasharray='12,6'/%3E%3Ccircle cx='400' cy='400' r='300' stroke-width='6'/%3E%3Ccircle cx='400' cy='400' r='240' stroke-dasharray='8,6'/%3E%3Ccircle cx='400' cy='400' r='180' stroke-width='5'/%3E%3Ccircle cx='400' cy='400' r='100'/%3E%3Ccircle cx='400' cy='400' r='40' fill='%238d1c20' fill-opacity='0.25'/%3E%3C/g%3E%3C/svg%3E");
     }
 
     /* =========================================================================
-       3. THANH ĐIỀU KHIỂN TRÊN & DƯỚI (ELEGANT GLASSMORPHISM)
+       3. THANH CÔNG CỤ TRÊN (MINIMALIST STORYBOOK HEADER)
        ========================================================================= */
-    .app-header, .app-footer {
+    .storybook-header {
       position: relative;
-      z-index: 30;
-      width: min(96vw, 1120px);
+      z-index: 50;
+      width: min(96vw, 1260px);
+      height: 50px;
+      margin-top: 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
-      padding: 8px 18px;
-      background: rgba(32, 20, 15, 0.82);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(182, 141, 64, 0.4);
-      border-radius: 14px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 235, 195, 0.12);
-      color: #f7ede0;
+      padding: 0 16px;
+      background: rgba(255, 253, 248, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(182, 141, 64, 0.38);
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(60, 40, 20, 0.06);
       font-family: var(--font-ui);
     }
 
-    .app-header {
-      margin-top: 10px;
-    }
-
-    .app-footer {
-      margin-bottom: 10px;
-      padding: 7px 18px;
-    }
-
-    .brand-group {
+    .brand-section {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       min-width: 0;
     }
 
-    .brand-seal-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 7px;
-      background: linear-gradient(135deg, #9b2226, #6b1417);
-      border: 1px solid var(--gold-light);
-      display: grid;
-      place-items: center;
-      font-family: var(--font-display);
+    .brand-badge {
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--crimson-royal);
+      color: #fff9ee;
+      font-family: var(--font-title);
       font-weight: 700;
-      font-size: 13px;
-      color: #fff6e8;
-      box-shadow: 0 3px 10px rgba(155, 34, 38, 0.5);
+      font-size: 11px;
+      letter-spacing: 0.5px;
       flex-shrink: 0;
     }
 
-    .brand-info {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .brand-title {
-      font-size: 13.5px;
-      font-weight: 600;
-      color: #faefdb;
+    .brand-heading {
+      font-family: var(--font-title);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--crimson-deep);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       letter-spacing: 0.3px;
     }
 
-    .brand-subtitle {
+    .brand-subheading {
       font-size: 11px;
-      color: #cfbc98;
+      color: var(--ink-muted);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
-    .nav-actions {
+    .nav-center {
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 8px;
     }
 
-    .icon-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      border: 1px solid rgba(182, 141, 64, 0.4);
-      background: rgba(50, 32, 24, 0.65);
-      color: #faeedb;
-      font-family: var(--font-ui);
-      font-size: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.22s ease;
-      white-space: nowrap;
-    }
-
-    .icon-btn:hover {
-      background: rgba(182, 141, 64, 0.26);
-      border-color: var(--gold-light);
-      color: #fffdf8;
-      transform: translateY(-1px);
-    }
-
-    .icon-btn:active {
-      transform: translateY(0);
-    }
-
-    .icon-btn.primary {
-      background: linear-gradient(135deg, #a02227, #781518);
-      border-color: var(--gold-light);
-      color: #fffbf2;
-      font-weight: 600;
-      box-shadow: 0 4px 14px rgba(155, 34, 38, 0.45);
-    }
-
-    .icon-btn.primary:hover {
-      background: linear-gradient(135deg, #b82b30, #88191d);
-      box-shadow: 0 6px 18px rgba(155, 34, 38, 0.6);
-    }
-
-    .icon-btn.active {
-      background: rgba(182, 141, 64, 0.32);
-      border-color: var(--gold-light);
-      color: #ffe6aa;
-    }
-
-    .icon-btn svg {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-    }
-
-    /* Thanh chân trang: Điều hướng trang nhanh */
-    .page-nav-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .nav-round-btn {
+    .nav-arrow-btn {
       width: 32px;
       height: 32px;
-      border-radius: 50%;
-      border: 1px solid rgba(182, 141, 64, 0.5);
-      background: rgba(50, 32, 24, 0.7);
-      color: #f7eedd;
+      border-radius: 8px;
+      border: 1px solid rgba(182, 141, 64, 0.4);
+      background: #ffffff;
+      color: var(--crimson-deep);
       display: grid;
       place-items: center;
       cursor: pointer;
       transition: all 0.2s ease;
     }
 
-    .nav-round-btn:hover:not(:disabled) {
+    .nav-arrow-btn:hover:not(:disabled) {
       background: var(--crimson-royal);
-      border-color: var(--gold-light);
       color: #ffffff;
-      transform: scale(1.08);
+      border-color: var(--crimson-royal);
+      transform: scale(1.05);
     }
 
-    .nav-round-btn:disabled {
+    .nav-arrow-btn:disabled {
       opacity: 0.3;
       cursor: not-allowed;
     }
 
-    .page-counter-tag {
-      font-family: var(--font-ui);
+    .page-indicator-badge {
       font-size: 12px;
       font-weight: 600;
-      color: var(--gold-light);
+      color: var(--crimson-deep);
+      background: rgba(182, 141, 64, 0.12);
+      border: 1px solid rgba(182, 141, 64, 0.35);
       padding: 4px 12px;
       border-radius: 99px;
-      background: rgba(182, 141, 64, 0.16);
-      border: 1px solid rgba(182, 141, 64, 0.35);
-      letter-spacing: 0.5px;
+      white-space: nowrap;
     }
 
-    .chapter-pills-bar {
+    .tool-actions {
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .ch-pill {
-      padding: 5px 10px;
-      border-radius: 7px;
-      border: 1px solid rgba(182, 141, 64, 0.28);
-      background: rgba(42, 26, 18, 0.55);
-      color: #cfbe9f;
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(182, 141, 64, 0.4);
+      background: #ffffff;
+      color: var(--ink-primary);
       font-family: var(--font-ui);
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.2s ease;
+      white-space: nowrap;
     }
 
-    .ch-pill:hover {
+    .btn-action:hover {
+      background: rgba(182, 141, 64, 0.15);
       border-color: var(--gold-royal);
-      color: #fff9ed;
+      color: var(--crimson-deep);
     }
 
-    .ch-pill.active {
-      background: linear-gradient(135deg, rgba(141, 28, 32, 0.95), rgba(95, 16, 20, 0.95));
-      border-color: var(--gold-light);
-      color: #fff9ec;
+    .btn-action.btn-primary {
+      background: linear-gradient(135deg, #8d1c20, #6c1216);
+      border-color: var(--gold-royal);
+      color: #ffffff;
       font-weight: 600;
-      box-shadow: 0 3px 10px rgba(141, 28, 32, 0.45);
+    }
+
+    .btn-action.btn-primary:hover {
+      background: linear-gradient(135deg, #a42327, #80161a);
+      box-shadow: 0 4px 12px rgba(141, 28, 32, 0.3);
+    }
+
+    .btn-action.active {
+      background: rgba(182, 141, 64, 0.2);
+      color: var(--crimson-royal);
+      border-color: var(--gold-royal);
+    }
+
+    .btn-action svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
     }
 
     /* =========================================================================
-       4. SÂN KHẤU TRÌNH DIỄN SÁCH LẬT 3D (STPAGEFLIP CONTAINER)
+       4. SÂN KHẤU TRÌNH DIỄN SÁCH LẬT 3D (TURN.JS FLIPBOOK STAGE)
        ========================================================================= */
-    .book-stage {
+    .storybook-stage {
       position: relative;
       z-index: 10;
       flex: 1;
@@ -335,122 +262,209 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 6px 16px;
+      padding: 8px 16px;
       min-height: 0;
+      overflow: visible;
     }
 
-    .flipbook-container {
+    /* Nút mũi tên lật sách nổi ở 2 bên mép màn hình (phong cách ebook365.vn) */
+    .stage-nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid rgba(182, 141, 64, 0.45);
+      color: var(--crimson-deep);
+      box-shadow: 0 4px 16px rgba(50, 30, 15, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 45;
+      transition: all 0.25s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .stage-nav-arrow:hover:not(:disabled) {
+      background: var(--crimson-royal);
+      color: #ffffff;
+      border-color: var(--gold-royal);
+      transform: translateY(-50%) scale(1.1);
+      box-shadow: 0 6px 20px rgba(141, 28, 32, 0.35);
+    }
+
+    .stage-nav-arrow.stage-nav-prev {
+      left: clamp(10px, 2.5vw, 28px);
+    }
+
+    .stage-nav-arrow.stage-nav-next {
+      right: clamp(10px, 2.5vw, 28px);
+    }
+
+    .stage-nav-arrow:disabled {
+      opacity: 0.18;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .stage-nav-arrow svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Thùng chứa Flipbook */
+    .book-wrapper {
       position: relative;
-      filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.75));
-      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent !important;
     }
 
-    /* Các lá sách của StPageFlip */
+    #flipbook {
+      position: relative;
+      background: transparent !important;
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+      will-change: transform;
+    }
+
+    .turn-page-wrapper {
+      background: transparent !important;
+    }
+
+    /* Các trang sách độc lập */
     .page {
       background-color: var(--paper-cream);
-      overflow: hidden;
+      overflow: hidden !important; /* TUYỆT ĐỐI KHÔNG CÓ THANH CUỘN */
       position: relative;
-      box-shadow: inset 0 0 30px rgba(138, 98, 54, 0.12);
+      border-radius: 4px;
     }
 
-    /* Lá bìa cứng (Hard cover) */
-    .page[data-density="hard"] {
-      background-color: var(--paper-aged);
+    .page.odd {
+      box-shadow: 4px 10px 30px rgba(40, 20, 10, 0.15), inset 0 0 35px rgba(180, 140, 90, 0.1);
     }
 
-    /* Khung viền hoa văn trang sách */
-    .page-frame {
+    .page.even {
+      box-shadow: -4px 10px 30px rgba(40, 20, 10, 0.15), inset 0 0 35px rgba(180, 140, 90, 0.1);
+    }
+
+    /* Độ dày tập giấy ở mép ngoài */
+    .page.odd::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 8px;
+      background: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.03) 60%, rgba(182, 141, 64, 0.15) 100%);
+      pointer-events: none;
+    }
+
+    .page.even::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 8px;
+      background: linear-gradient(to left, transparent 0%, rgba(0,0,0,0.03) 60%, rgba(182, 141, 64, 0.15) 100%);
+      pointer-events: none;
+    }
+
+    /* Chiều sâu gáy sách ở giữa (Spine shadow) */
+    .page.even .spine-gradient {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 28px;
+      background: linear-gradient(to right, transparent 0%, rgba(30, 15, 5, 0.05) 50%, rgba(30, 15, 5, 0.22) 100%);
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    .page.odd .spine-gradient {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 28px;
+      background: linear-gradient(to left, transparent 0%, rgba(30, 15, 5, 0.05) 50%, rgba(30, 15, 5, 0.22) 100%);
+      pointer-events: none;
+      z-index: 20;
+    }
+
+    /* Khung viền thanh lịch của mỗi trang */
+    .page-layout-frame {
       position: absolute;
       inset: 12px;
-      border: 1.5px solid rgba(182, 141, 64, 0.65);
+      border: 1.5px solid rgba(182, 141, 64, 0.55);
       border-radius: 4px;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      justify-content: space-between;
+      padding: 12px 16px 10px 16px;
       background:
-        radial-gradient(circle at 50% 0%, rgba(255, 252, 245, 0.6), transparent 70%),
-        linear-gradient(180deg, var(--paper-cream) 0%, var(--paper-aged) 100%);
-      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.4);
+        radial-gradient(circle at 50% 20%, #fffefb 0%, var(--paper-cream) 80%, var(--paper-aged) 100%);
+      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+      overflow: hidden !important;
     }
 
-    /* Hoa văn triện 4 góc hoàng gia */
-    .corner-ornament {
+    /* Hoa văn triện 4 góc trang nhã */
+    .corner-trien {
       position: absolute;
-      width: 26px;
-      height: 26px;
+      width: 20px;
+      height: 20px;
       color: var(--gold-royal);
       pointer-events: none;
-      z-index: 6;
+      z-index: 5;
       opacity: 0.85;
     }
-    .corner-ornament.tl { top: 3px; left: 3px; }
-    .corner-ornament.tr { top: 3px; right: 3px; transform: scaleX(-1); }
-    .corner-ornament.bl { bottom: 3px; left: 3px; transform: scaleY(-1); }
-    .corner-ornament.br { bottom: 3px; right: 3px; transform: scale(-1, -1); }
+    .corner-trien.tl { top: 2px; left: 2px; }
+    .corner-trien.tr { top: 2px; right: 2px; transform: scaleX(-1); }
+    .corner-trien.bl { bottom: 2px; left: 2px; transform: scaleY(-1); }
+    .corner-trien.br { bottom: 2px; right: 2px; transform: scale(-1, -1); }
 
-    /* Nội dung trang sách có thể cuộn nhẹ nhàng để luôn toàn vẹn chữ */
-    .page-scroll-content {
-      flex: 1;
-      min-height: 0;
-      overflow-y: auto;
-      overflow-x: hidden;
-      padding: 16px 22px 14px 22px;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(182, 141, 64, 0.45) transparent;
-      user-select: text;
-    }
-
-    .page-scroll-content::-webkit-scrollbar {
-      width: 4px;
-    }
-    .page-scroll-content::-webkit-scrollbar-thumb {
-      background: rgba(182, 141, 64, 0.45);
-      border-radius: 99px;
-    }
-
-    /* Chân trang in số trang cổ điển */
-    .page-folio {
-      flex-shrink: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 20px;
-      border-top: 1px solid rgba(182, 141, 64, 0.35);
-      background: rgba(235, 222, 196, 0.35);
-      font-family: var(--font-ui);
-      font-size: 10.5px;
-      color: var(--ink-light);
-    }
-
-    .folio-page-num {
-      font-weight: 700;
-      color: var(--crimson-royal);
-      letter-spacing: 0.4px;
+    /* Góc gợi ý lật sách (Page Curl Hint) */
+    .page-curl-indicator {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, transparent 50%, rgba(182, 141, 64, 0.25) 50%, #f4e8cf 100%);
+      box-shadow: -2px -2px 6px rgba(0, 0, 0, 0.08);
+      border-top-left-radius: 4px;
+      pointer-events: none;
+      z-index: 25;
+      opacity: 0.85;
     }
 
     /* =========================================================================
-       5. THIẾT KẾ TRANG BÌA CHUẨN MỰC XUẤT BẢN CAO CẤP (BÌA SÁCH THẬT)
+       5. THIẾT KẾ TRANG BÌA CHÍNH (COVER PAGE - ĐẲNG CẤP XUẤT BẢN)
        ========================================================================= */
-    .cover-frame {
+    .cover-outer-frame {
       position: absolute;
       inset: 10px;
       border: 2px solid var(--gold-royal);
       border-radius: 6px;
       padding: 3px;
-      background:
-        radial-gradient(circle at 50% 35%, #fffbf2 0%, #f7ecd5 65%, #edd9b8 100%);
+      background: radial-gradient(circle at 50% 38%, #fffefb 0%, #f7ecd5 70%, #ebd8b6 100%);
       box-shadow:
-        inset 0 0 35px rgba(110, 75, 35, 0.18),
-        0 4px 14px rgba(0, 0, 0, 0.12);
+        inset 0 0 35px rgba(110, 75, 35, 0.15),
+        0 4px 16px rgba(0, 0, 0, 0.08);
       display: flex;
       flex-direction: column;
     }
 
-    .cover-inner-border {
+    .cover-inner-body {
       flex: 1;
       border: 1px solid rgba(141, 28, 32, 0.45);
       border-radius: 4px;
-      padding: 16px 20px 14px 20px;
+      padding: clamp(10px, 1.8vh, 16px) clamp(10px, 2vw, 18px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -460,484 +474,452 @@
       overflow: hidden;
     }
 
-    .cover-top-header {
+    .cover-top-meta {
       font-family: var(--font-ui);
-      font-size: 10px;
+      font-size: clamp(9px, 1.25vh, 10.5px);
       font-weight: 700;
-      letter-spacing: 1.5px;
+      letter-spacing: 1.4px;
       text-transform: uppercase;
       color: var(--crimson-deep);
-      line-height: 1.45;
+      line-height: 1.4;
     }
 
-    .cover-sub-header {
-      font-family: var(--font-ui);
-      font-size: 9.5px;
-      letter-spacing: 0.8px;
-      color: var(--ink-muted);
-      margin-top: 3px;
-      font-weight: 500;
+    .cover-title-group {
+      margin: 2px 0 4px 0;
     }
 
-    .cover-divider-top {
-      width: 110px;
-      height: 10px;
-      margin: 8px 0;
-      color: var(--gold-royal);
-      opacity: 0.8;
-    }
-
-    .cover-title-area {
-      margin: 2px 0 8px 0;
-    }
-
-    .cover-script-intro {
+    .cover-cursive-accent {
       font-family: var(--font-script);
-      font-size: clamp(24px, 4.2vw, 34px);
-      color: #922b27;
+      font-size: clamp(24px, 3.8vh, 32px);
+      color: #94292d;
       line-height: 1.1;
-      margin-bottom: -2px;
-      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.8);
     }
 
-    .cover-main-title {
-      font-family: var(--font-display);
-      font-size: clamp(22px, 3.8vw, 32px);
+    .cover-heading-bold {
+      font-family: var(--font-title);
+      font-size: clamp(19px, 3.2vh, 26px);
       font-weight: 900;
       line-height: 1.2;
-      color: #24120a;
+      color: #24130b;
       letter-spacing: 0.8px;
       text-transform: uppercase;
-      text-shadow: 0 1px 1px rgba(255, 255, 255, 0.7);
     }
 
-    .cover-subtitle-text {
+    .cover-subtitle-desc {
       font-family: var(--font-body);
       font-style: italic;
-      font-size: 12.5px;
-      line-height: 1.45;
+      font-size: clamp(10.5px, 1.5vh, 12px);
+      line-height: 1.35;
       color: var(--ink-muted);
-      max-width: 380px;
-      margin: 6px auto 0 auto;
+      max-width: 360px;
+      margin: 3px auto 0 auto;
     }
 
-    /* Khung tranh bìa lồng khung sơn mài cổ điển */
-    .cover-art-wrapper {
-      position: relative;
-      width: min(72%, 270px);
-      aspect-ratio: 1 / 1.08;
-      margin: 8px 0;
-      padding: 5px;
+    /* Họa phẩm bìa Thúy Kiều gảy đàn tỳ bà */
+    .cover-art-box {
+      width: clamp(140px, 48%, 210px);
+      max-height: clamp(110px, 26vh, 160px);
+      aspect-ratio: 1 / 1.05;
+      padding: 3px;
       border: 1.5px solid var(--gold-royal);
-      border-radius: 8px;
-      background: #fdfaf3;
-      box-shadow: 0 8px 24px rgba(45, 25, 12, 0.2);
+      border-radius: 6px;
+      background: #ffffff;
+      box-shadow: 0 4px 14px rgba(45, 25, 12, 0.14);
+      margin: 2px 0;
+      flex-shrink: 1;
     }
 
-    .cover-art-img {
+    .cover-art-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       object-position: center top;
-      border-radius: 5px;
+      border-radius: 4px;
       display: block;
-      filter: sepia(0.08) contrast(1.02);
     }
 
-    .cover-credits-block {
-      margin-top: 4px;
+    .cover-footer-info {
+      margin-top: 2px;
+      flex-shrink: 0;
     }
 
-    .cover-student-group {
+    .cover-student-text {
       font-family: var(--font-ui);
-      font-size: 11px;
+      font-size: clamp(9.5px, 1.3vh, 10.5px);
       font-weight: 700;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
       color: var(--crimson-royal);
       text-transform: uppercase;
     }
 
-    .cover-school-name {
+    .cover-sub-text {
       font-family: var(--font-ui);
-      font-size: 10.5px;
+      font-size: clamp(8.5px, 1.2vh, 9.5px);
       color: var(--ink-muted);
-      margin-top: 3px;
+      margin-top: 2px;
     }
 
-    .cover-seal-wrap {
+    .cover-seal-pill {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      margin-top: 8px;
-      padding: 3px 10px;
+      gap: 6px;
+      margin-top: 4px;
+      padding: 2px 8px;
       border: 1px dashed rgba(141, 28, 32, 0.45);
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.45);
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.5);
     }
 
-    .vermilion-box {
-      border: 1.5px solid var(--crimson-royal);
+    .vermilion-seal-text {
+      border: 1.2px solid var(--crimson-royal);
       color: var(--crimson-royal);
-      font-family: var(--font-display);
-      font-size: 9px;
+      font-family: var(--font-title);
+      font-size: 8.5px;
       font-weight: 800;
-      letter-spacing: 0.5px;
-      padding: 2px 5px;
-      border-radius: 3px;
+      padding: 1px 4px;
+      border-radius: 2px;
       text-transform: uppercase;
     }
 
-    .cover-imprint {
+    .cover-seal-label {
       font-family: var(--font-ui);
-      font-size: 9.5px;
-      font-weight: 500;
+      font-size: 8.5px;
       color: var(--ink-light);
-      letter-spacing: 0.4px;
     }
 
     /* =========================================================================
-       6. TYPOGRAPHY & CÁC THÀNH PHẦN NỘI DUNG TRONG TRANG
+       6. DÀN TRANG NỘI DUNG 4 TRANG CHÍNH (VỪA VẶN 100%, KHÔNG CUỘN)
        ========================================================================= */
-    .chapter-heading-bar {
+    .page-header-bar {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 12px;
-      padding-bottom: 8px;
-      margin-bottom: 12px;
-      border-bottom: 1.5px solid rgba(182, 141, 64, 0.65);
+      gap: 10px;
+      padding-bottom: 5px;
+      margin-bottom: 6px;
+      border-bottom: 1.2px solid rgba(182, 141, 64, 0.55);
+      flex-shrink: 0;
     }
 
-    .chapter-kicker {
-      display: inline-block;
+    .page-kicker {
       font-family: var(--font-ui);
-      font-size: 10px;
+      font-size: clamp(8px, 1.15vh, 9px);
       font-weight: 700;
-      letter-spacing: 1.3px;
+      letter-spacing: 1.2px;
       text-transform: uppercase;
       color: var(--gold-royal);
-      margin-bottom: 3px;
+      margin-bottom: 2px;
+      display: block;
     }
 
-    .chapter-main-title {
-      font-family: var(--font-display);
-      font-size: clamp(17px, 2.2vw, 21px);
+    .page-main-title {
+      font-family: var(--font-title);
+      font-size: clamp(13px, 1.9vh, 17px);
       font-weight: 700;
       color: var(--crimson-royal);
-      line-height: 1.28;
+      line-height: 1.22;
     }
 
-    .chapter-seal {
-      width: 28px;
-      height: 28px;
-      border: 1.5px solid var(--crimson-royal);
-      border-radius: 4px;
+    .page-seal-badge {
+      width: 24px;
+      height: 24px;
+      border: 1.2px solid var(--crimson-royal);
+      border-radius: 3px;
       color: var(--crimson-royal);
-      font-family: var(--font-display);
-      font-size: 10px;
+      font-family: var(--font-title);
+      font-size: 9px;
       font-weight: 800;
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      transform: rotate(-2deg);
     }
 
-    .prose-text {
+    .page-body-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 5px;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .prose-paragraph {
       font-family: var(--font-body);
-      font-size: 13px;
-      line-height: 1.68;
-      color: var(--ink-black);
+      font-size: clamp(11px, 1.5vh, 12.5px);
+      line-height: 1.52;
+      color: var(--ink-body);
       text-align: justify;
-      margin-bottom: 10px;
     }
 
-    .prose-text.lead-cap::first-letter {
+    .prose-paragraph.dropcap::first-letter {
       float: left;
-      font-family: var(--font-display);
-      font-size: 40px;
-      line-height: 0.82;
+      font-family: var(--font-title);
+      font-size: clamp(32px, 4.2vh, 40px);
+      line-height: 0.8;
       font-weight: 700;
       color: var(--crimson-royal);
-      padding: 3px 6px 1px 0;
+      padding: 2px 5px 1px 0;
     }
 
     /* Khung tranh minh họa xuất bản */
-    .illustration-card {
-      position: relative;
-      background: #fffdf8;
-      border: 1.2px solid var(--gold-royal);
-      border-radius: 7px;
-      padding: 5px;
-      margin: 10px 0 12px 0;
-      box-shadow: 0 4px 14px rgba(45, 25, 12, 0.12);
+    .art-illustration-card {
+      background: #ffffff;
+      border: 1px solid var(--gold-royal);
+      border-radius: 5px;
+      padding: 3px;
+      box-shadow: 0 3px 10px rgba(45, 25, 12, 0.08);
+      margin: 2px 0;
+      flex-shrink: 1;
     }
 
-    .illustration-photo {
+    .art-illustration-card img {
       width: 100%;
-      max-height: 195px;
+      max-height: clamp(95px, 15vh, 135px);
       object-fit: cover;
       object-position: center;
-      border-radius: 4px;
+      border-radius: 3px;
       display: block;
-      filter: sepia(0.06) contrast(1.02);
     }
 
-    .illustration-caption {
-      margin-top: 5px;
+    .art-illustration-caption {
+      margin-top: 3px;
       font-family: var(--font-ui);
-      font-size: 10.5px;
+      font-size: clamp(8px, 1.1vh, 9.5px);
       font-style: italic;
       color: var(--ink-muted);
       text-align: center;
-      line-height: 1.4;
     }
 
-    /* Hộp tôn vinh giá trị & ghi chú */
-    .parchment-callout {
-      background: linear-gradient(135deg, rgba(182, 141, 64, 0.12), rgba(141, 28, 32, 0.05));
-      border: 1px solid rgba(182, 141, 64, 0.55);
-      border-left: 3.5px solid var(--crimson-royal);
-      border-radius: 0 6px 6px 0;
-      padding: 9px 13px;
-      margin: 10px 0;
+    /* Hộp tôn vinh giá trị */
+    .callout-box {
+      background: rgba(182, 141, 64, 0.08);
+      border-left: 3px solid var(--crimson-royal);
+      border-radius: 0 4px 4px 0;
+      padding: 5px 9px;
+      flex-shrink: 0;
     }
 
-    .callout-header {
+    .callout-title {
       font-family: var(--font-ui);
-      font-size: 10px;
+      font-size: clamp(8.5px, 1.15vh, 9.5px);
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
       color: var(--crimson-royal);
-      margin-bottom: 4px;
-    }
-
-    /* Thẻ nhân vật 2 cột gọn gàng */
-    .characters-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 7px;
-      margin: 10px 0;
-    }
-
-    .char-mini-card {
-      padding: 7px 9px;
-      border-radius: 6px;
-      border: 1px solid rgba(182, 141, 64, 0.4);
-      background: rgba(255, 253, 248, 0.85);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .char-mini-card strong {
-      font-family: var(--font-display);
-      font-size: 13px;
-      color: var(--crimson-deep);
-      display: block;
       margin-bottom: 2px;
     }
 
-    /* Thơ lục bát chuẩn mỹ cảm */
-    .luc-bat-box {
-      margin: 8px 0;
-      padding: 8px 14px;
-      background: rgba(255, 252, 245, 0.7);
-      border-left: 3px solid var(--gold-royal);
-      border-radius: 0 5px 5px 0;
-      font-family: var(--font-body);
-      font-style: italic;
-      font-size: 12.8px;
-      line-height: 1.68;
-      color: var(--ink-black);
-    }
-    .luc-bat-box .c6 { padding-left: 18px; display: block; }
-    .luc-bat-box .c8 { padding-left: 0; display: block; }
-
-    /* Trích dẫn phê bình kinh điển */
-    .critic-quote-box {
-      padding: 9px 12px;
-      margin: 8px 0;
-      border-radius: 6px;
-      background: rgba(35, 67, 77, 0.06);
-      border-left: 3px solid var(--jade-deep);
-      font-size: 12.5px;
-      line-height: 1.58;
-      font-style: italic;
-      color: #1e3036;
+    /* 4 Thẻ nhân vật nhỏ gọn */
+    .characters-2x2-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      flex-shrink: 0;
     }
 
-    .critic-quote-box cite {
+    .character-pill-card {
+      padding: 4px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(182, 141, 64, 0.35);
+      background: rgba(255, 255, 255, 0.7);
+      font-size: clamp(10px, 1.35vh, 11px);
+      line-height: 1.38;
+    }
+
+    .character-pill-card strong {
+      font-family: var(--font-title);
+      font-size: clamp(11px, 1.4vh, 12px);
+      color: var(--crimson-deep);
       display: block;
-      margin-top: 4px;
+      margin-bottom: 1px;
+    }
+
+    /* Trích dẫn phê bình ngắn */
+    .quote-critic-mini {
+      padding: 5px 9px;
+      border-radius: 4px;
+      background: rgba(36, 70, 80, 0.06);
+      border-left: 2.5px solid var(--jade-deep);
+      font-size: clamp(10px, 1.35vh, 11px);
+      line-height: 1.44;
+      font-style: italic;
+      color: #1a2d33;
+      flex-shrink: 0;
+    }
+
+    .quote-critic-mini cite {
+      display: block;
+      margin-top: 2px;
       font-style: normal;
       font-family: var(--font-ui);
-      font-size: 10.5px;
+      font-size: clamp(8px, 1.05vh, 9px);
       font-weight: 600;
       color: var(--jade-deep);
       text-align: right;
     }
 
-    /* Bảng 4 phương diện sáng tạo */
-    .aspects-grid-2x2 {
+    /* Lưới 4 phương diện sáng tạo */
+    .aspects-grid-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 7px;
-      margin: 8px 0 10px 0;
+      gap: 4px;
+      flex-shrink: 0;
     }
 
-    .aspect-item-box {
-      padding: 7px 9px;
-      border-radius: 6px;
-      background: rgba(255, 253, 248, 0.88);
-      border: 1px solid rgba(182, 141, 64, 0.42);
+    .aspect-box-item {
+      padding: 4px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid rgba(182, 141, 64, 0.38);
     }
 
-    .aspect-item-title {
+    .aspect-box-title {
       font-family: var(--font-ui);
-      font-size: 11px;
+      font-size: clamp(9px, 1.25vh, 10px);
       font-weight: 700;
       color: var(--crimson-royal);
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
-    .aspect-item-box p {
-      font-size: 12px;
-      line-height: 1.5;
-      color: var(--ink-black);
+    .aspect-box-item p {
+      font-size: clamp(9.5px, 1.3vh, 10.5px);
+      line-height: 1.38;
+      color: var(--ink-body);
       margin: 0;
     }
 
     /* Bảng giải phẫu vi văn bản đối sánh */
-    .micro-compare-wrap {
-      background: rgba(255, 252, 245, 0.88);
-      border: 1.2px solid rgba(141, 28, 32, 0.35);
-      border-radius: 7px;
-      padding: 9px 11px;
-      margin: 9px 0;
+    .micro-comparison-box {
+      background: rgba(255, 253, 248, 0.9);
+      border: 1px solid rgba(141, 28, 32, 0.3);
+      border-radius: 5px;
+      padding: 5px 7px;
+      flex-shrink: 0;
     }
 
-    .micro-head {
-      font-family: var(--font-ui);
-      font-size: 10.5px;
-      font-weight: 700;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      color: var(--crimson-royal);
-      margin-bottom: 6px;
-    }
-
-    .micro-grid {
+    .micro-comparison-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 5px;
     }
 
-    .micro-cell {
-      padding: 7px 9px;
-      border-radius: 5px;
-      font-size: 12px;
-      line-height: 1.54;
+    .micro-column {
+      padding: 4px 5px;
+      border-radius: 4px;
+      font-size: clamp(9.5px, 1.3vh, 10.5px);
+      line-height: 1.4;
     }
 
-    .micro-cell.source {
-      background: rgba(35, 67, 77, 0.08);
-      border: 1px solid rgba(35, 67, 77, 0.22);
+    .micro-column.source-col {
+      background: rgba(36, 70, 80, 0.08);
+      border: 1px solid rgba(36, 70, 80, 0.2);
     }
 
-    .micro-cell.target {
+    .micro-column.target-col {
       background: rgba(141, 28, 32, 0.06);
-      border: 1px solid rgba(141, 28, 32, 0.25);
+      border: 1px solid rgba(141, 28, 32, 0.2);
     }
 
-    .micro-tag {
+    .micro-badge {
       font-family: var(--font-ui);
-      font-size: 9.5px;
+      font-size: 8px;
       font-weight: 700;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
+      display: block;
     }
-    .micro-cell.source .micro-tag { color: var(--jade-deep); }
-    .micro-cell.target .micro-tag { color: var(--crimson-royal); }
+    .micro-column.source-col .micro-badge { color: var(--jade-deep); }
+    .micro-column.target-col .micro-badge { color: var(--crimson-royal); }
 
     /* Bảng đối chiếu 5 phương diện Trang 5 */
-    .table-compare-clean {
+    .comparison-table-clean {
       width: 100%;
       border-collapse: collapse;
-      font-size: 11.8px;
-      line-height: 1.48;
-      margin: 8px 0 10px 0;
-      border-radius: 6px;
+      font-size: clamp(9px, 1.25vh, 10.5px);
+      line-height: 1.36;
+      border-radius: 4px;
       overflow: hidden;
+      margin: 1px 0;
+      flex-shrink: 1;
     }
 
-    .table-compare-clean thead th {
-      background: linear-gradient(135deg, #8d1c20, #681115);
-      color: #fffbf2;
+    .comparison-table-clean thead th {
+      background: var(--crimson-royal);
+      color: #fffdf8;
       font-family: var(--font-ui);
-      font-size: 10.5px;
+      font-size: clamp(8.5px, 1.15vh, 9.5px);
       font-weight: 600;
+      padding: 3px 5px;
       text-align: left;
-      padding: 6px 8px;
-      border: 1px solid #641216;
     }
 
-    .table-compare-clean tbody td {
-      padding: 6px 8px;
-      border: 1px solid rgba(182, 141, 64, 0.38);
-      background: rgba(255, 252, 246, 0.85);
+    .comparison-table-clean tbody td {
+      padding: 3px 5px;
+      border: 1px solid rgba(182, 141, 64, 0.3);
+      background: rgba(255, 255, 255, 0.7);
       vertical-align: top;
     }
 
-    .table-compare-clean tbody tr:nth-child(even) td {
-      background: rgba(244, 235, 218, 0.55);
+    .comparison-table-clean tbody tr:nth-child(even) td {
+      background: rgba(246, 238, 224, 0.45);
     }
 
-    .table-compare-clean td.aspect-name {
+    .comparison-table-clean td.aspect-col {
       font-family: var(--font-ui);
       font-weight: 700;
       color: var(--crimson-deep);
       width: 22%;
     }
 
-    /* Thuật ngữ Ngữ văn 12 */
-    .glossary-grid {
+    /* Thuật ngữ 4 ô */
+    .glossary-2x2-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 7px;
-      margin: 8px 0;
+      gap: 4px;
+      flex-shrink: 0;
     }
 
-    .gloss-card {
-      padding: 7px 9px;
-      border: 1px solid rgba(182, 141, 64, 0.38);
-      border-radius: 5px;
-      background: rgba(255, 252, 245, 0.85);
-      font-size: 11.5px;
-      line-height: 1.48;
+    .gloss-mini-card {
+      padding: 4px 5px;
+      border: 1px solid rgba(182, 141, 64, 0.35);
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.7);
+      font-size: clamp(9px, 1.25vh, 10px);
+      line-height: 1.36;
+    }
+    .gloss-mini-card strong { color: var(--crimson-royal); }
+
+    /* Chân trang in số trang */
+    .page-footer-folio {
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 3px;
+      border-top: 1px solid rgba(182, 141, 64, 0.35);
+      font-family: var(--font-ui);
+      font-size: clamp(8px, 1.05vh, 9px);
+      color: var(--ink-light);
     }
 
-    .gloss-card strong {
+    .folio-num-bold {
+      font-weight: 700;
       color: var(--crimson-royal);
     }
 
-    /* Danh mục tài liệu tham khảo */
-    .ref-list-styled {
-      padding-left: 16px;
-      font-size: 11px;
-      line-height: 1.5;
-      color: var(--ink-muted);
-      margin: 6px 0;
-    }
-
-    /* Bìa sau (Back cover) */
-    .back-cover-frame {
+    /* =========================================================================
+       7. BÌA SAU (BACK COVER)
+       ========================================================================= */
+    .back-cover-outer {
       position: absolute;
       inset: 10px;
       border: 2px solid var(--gold-royal);
       border-radius: 6px;
       padding: 3px;
-      background: radial-gradient(circle at 50% 50%, #f9f1e1 0%, #ecd7b4 70%, #dfc499 100%);
-      box-shadow: inset 0 0 35px rgba(110, 75, 35, 0.2);
+      background: radial-gradient(circle at 50% 50%, #fffefb 0%, #ebd7b5 75%, #ddc093 100%);
+      box-shadow: inset 0 0 35px rgba(110, 75, 35, 0.18);
       display: flex;
       flex-direction: column;
     }
@@ -946,7 +928,7 @@
       flex: 1;
       border: 1px solid rgba(141, 28, 32, 0.45);
       border-radius: 4px;
-      padding: 24px 20px;
+      padding: clamp(14px, 2.5vh, 22px) clamp(12px, 2vw, 18px);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -955,549 +937,479 @@
     }
 
     /* =========================================================================
-       7. MỤC LỤC POPUP & MODAL THÔNG TIN (CLEAN OVERLAY)
+       8. THANH CHÂN TRANG ĐIỀU HƯỚNG NHANH
        ========================================================================= */
-    .overlay-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      background: rgba(18, 11, 8, 0.76);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      display: none;
+    .storybook-footer {
+      position: relative;
+      z-index: 50;
+      width: min(96vw, 1260px);
+      height: 40px;
+      margin-bottom: 8px;
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-    }
-
-    .overlay-backdrop.open {
-      display: flex;
-      animation: fadeIn 0.22s ease;
-    }
-
-    .popup-dialog {
-      width: min(92vw, 560px);
-      max-height: 85vh;
-      overflow-y: auto;
-      background: #faf4e8;
-      border: 2px solid var(--gold-royal);
-      border-radius: 12px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
-      padding: 20px 24px;
+      gap: 6px;
       font-family: var(--font-ui);
-      color: var(--ink-black);
     }
 
-    .popup-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 10px;
-      margin-bottom: 14px;
-      border-bottom: 1.5px solid rgba(182, 141, 64, 0.5);
-    }
-
-    .popup-header h3 {
-      font-family: var(--font-display);
-      font-size: 18px;
-      color: var(--crimson-royal);
-    }
-
-    .popup-close-btn {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      border: 1px solid rgba(141, 28, 32, 0.35);
-      background: transparent;
-      color: var(--crimson-royal);
-      cursor: pointer;
-      display: grid;
-      place-items: center;
-      font-size: 16px;
-    }
-
-    .toc-cards-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 9px;
-    }
-
-    .toc-card-btn {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
-      border-radius: 8px;
-      border: 1px solid rgba(182, 141, 64, 0.45);
-      background: #fffdf8;
-      cursor: pointer;
-      text-align: left;
-      transition: all 0.2s ease;
-    }
-
-    .toc-card-btn:hover {
-      background: rgba(182, 141, 64, 0.14);
-      border-color: var(--crimson-royal);
-      transform: translateX(4px);
-    }
-
-    .toc-badge {
-      font-weight: 700;
+    .tab-jump-btn {
+      padding: 5px 12px;
+      border-radius: 7px;
+      border: 1px solid rgba(182, 141, 64, 0.35);
+      background: rgba(255, 253, 248, 0.88);
+      color: var(--ink-muted);
       font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .tab-jump-btn:hover {
+      border-color: var(--gold-royal);
       color: var(--crimson-royal);
-      padding: 3px 8px;
-      border-radius: 4px;
-      background: rgba(141, 28, 32, 0.1);
-      flex-shrink: 0;
+      background: #ffffff;
+      transform: translateY(-1px);
     }
 
-    .toc-name {
-      font-family: var(--font-display);
-      font-size: 13.5px;
+    .tab-jump-btn.active {
+      background: var(--crimson-royal);
+      color: #ffffff;
+      border-color: var(--crimson-royal);
       font-weight: 600;
-      color: var(--ink-black);
+      box-shadow: 0 2px 8px rgba(141, 28, 32, 0.25);
     }
 
-    /* Toast thông báo */
-    #actionToast {
+    /* Thông báo Toast */
+    #actionNotification {
       position: fixed;
-      bottom: 74px;
+      bottom: 58px;
       left: 50%;
-      transform: translateX(-50%) translateY(14px);
-      z-index: 200;
-      padding: 9px 18px;
-      border-radius: 99px;
-      background: rgba(30, 18, 12, 0.94);
-      border: 1px solid var(--gold-light);
-      color: #fff9ee;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(34, 21, 15, 0.92);
+      color: #faf5eb;
       font-family: var(--font-ui);
       font-size: 12px;
       font-weight: 500;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.55);
+      padding: 8px 18px;
+      border-radius: 99px;
+      border: 1px solid rgba(182, 141, 64, 0.4);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
       opacity: 0;
       pointer-events: none;
       transition: all 0.25s ease;
+      z-index: 1000;
     }
-    #actionToast.active {
+    #actionNotification.visible {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.97); }
-      to { opacity: 1; transform: scale(1); }
+    /* =========================================================================
+       9. RESPONSIVE MOBILE TỐI ƯU
+       ========================================================================= */
+    @media (max-width: 768px) {
+      .storybook-header {
+        height: 44px;
+        padding: 0 10px;
+      }
+      .brand-subheading,
+      .btn-action .label-text {
+        display: none;
+      }
+      .btn-action {
+        padding: 6px 8px;
+      }
+      .storybook-footer {
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 0 8px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .tab-jump-btn {
+        flex-shrink: 0;
+        font-size: 10.5px;
+        padding: 4px 9px;
+      }
+      .stage-nav-arrow {
+        width: 36px;
+        height: 36px;
+      }
     }
 
     /* =========================================================================
-       8. RESPONSIVE THIẾT KẾ CHO ĐIỆN THOẠI & MÁY TÍNH
+       10. ĐỊNH DẠNG XUẤT IN PDF (PRINT STYLESHEET)
        ========================================================================= */
-    @media (max-width: 900px) {
-      .brand-subtitle { display: none; }
-      .ch-pill span.pill-full-text { display: none; }
-      .app-header, .app-footer { padding: 6px 12px; }
-    }
-
-    @media (max-width: 640px) {
-      .app-header {
-        margin-top: 6px;
-        padding: 6px 10px;
-      }
-      .brand-title { font-size: 12.5px; }
-      .icon-btn span.btn-text { display: none; }
-      .chapter-pills-bar { display: none; }
-      .page-frame { inset: 8px; }
-      .page-scroll-content { padding: 12px 14px; }
-      .characters-grid, .aspects-grid-2x2, .micro-grid, .glossary-grid {
-        grid-template-columns: 1fr;
-      }
-      .cover-inner-border { padding: 12px 10px; }
-      .cover-art-wrapper { width: min(85%, 220px); }
-    }
-
-    /* =========================================================================
-       9. XUẤT IN PDF 5 TRANG CHUẨN A4 (@media print)
-       ========================================================================= */
-    @page {
-      size: A4 portrait;
-      margin: 8mm;
-    }
-
     @media print {
-      body, html, .reading-room {
+      body, html {
         background: #ffffff !important;
         overflow: visible !important;
-        height: auto !important;
-        width: 100% !important;
       }
-      .bronze-drum-watermark, #ambientCanvas, .app-header, .app-footer, .overlay-backdrop, #actionToast {
+      .storybook-header,
+      .storybook-footer,
+      .cultural-watermark,
+      .stage-nav-arrow,
+      #actionNotification {
         display: none !important;
       }
-      .book-stage, .flipbook-container {
+      .storybook-stage, .book-wrapper, #flipbook {
         display: block !important;
-        filter: none !important;
+        width: 100% !important;
+        height: auto !important;
         transform: none !important;
       }
       .page {
-        position: relative !important;
-        width: 100% !important;
-        height: 275mm !important;
         page-break-after: always !important;
-        break-after: page !important;
+        width: 100% !important;
+        height: 100vh !important;
         box-shadow: none !important;
-        overflow: visible !important;
-        margin-bottom: 20mm !important;
-      }
-      .page-frame, .cover-frame, .back-cover-frame {
+        border: none !important;
+        display: block !important;
         position: relative !important;
-        inset: 0 !important;
-        height: 100% !important;
-      }
-      .page-scroll-content {
-        overflow: visible !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="reading-room">
-    <!-- Họa tiết trống đồng Đông Sơn in chìm cổ điển -->
-    <div class="bronze-drum-watermark" aria-hidden="true"></div>
-
-    <!-- Canvas hạt bụi vàng & cánh hoa đào bay bổng -->
-    <canvas id="ambientCanvas" aria-hidden="true"></canvas>
+  <div class="storybook-app">
+    <!-- Họa tiết hoa văn in mờ -->
+    <div class="cultural-watermark" aria-hidden="true"></div>
 
     <!-- =====================================================================
-         THANH CÔNG CỤ TRÊN (TOP TOOLBAR)
+         THANH CÔNG CỤ TRÊN (STORYBOOK HEADER)
          ===================================================================== -->
-    <header class="app-header" role="banner">
-      <div class="brand-group">
-        <div class="brand-seal-icon" title="Cảo Thơm Văn Học 12">Kiều</div>
-        <div class="brand-info">
-          <div class="brand-title">Từ Kim Vân Kiều truyện đến Truyện Kiều</div>
-          <div class="brand-subtitle">E-book Lật 3D • Ngữ văn Khối 12 • THPT Tây Thạnh (2026–2027)</div>
+    <header class="storybook-header" role="banner">
+      <div class="brand-section">
+        <div class="brand-badge">THPT Tây Thạnh</div>
+        <div style="min-width:0;">
+          <h1 class="brand-heading">Từ Kim Vân Kiều truyện đến Truyện Kiều</h1>
+          <p class="brand-subheading">Kỷ yếu Sách điện tử 3D • Ngoại khóa Ngữ văn Khối 12 (2026 – 2027)</p>
         </div>
       </div>
 
-      <div class="nav-actions">
-        <button id="btnToc" class="icon-btn" type="button" title="Mục lục 5 trang E-book">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-          <span class="btn-text">Mục lục</span>
+      <div class="nav-center">
+        <button class="nav-arrow-btn" id="btnPrevPage" type="button" aria-label="Lùi lại" title="Lùi lại một trang">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="page-indicator-badge" id="indicatorText">Bìa trước</div>
+        <button class="nav-arrow-btn" id="btnNextPage" type="button" aria-label="Tiếp theo" title="Lật sang trang kế tiếp">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+
+      <div class="tool-actions">
+        <button class="btn-action active" id="btnAudioToggle" type="button" title="Bật/Tắt âm thanh lật giấy tự nhiên">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          <span class="label-text">Âm thanh</span>
         </button>
 
-        <button id="btnAudio" class="icon-btn active" type="button" title="Bật/Tắt âm thanh lật giấy">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
-          <span class="btn-text">Âm thanh</span>
+        <button class="btn-action" id="btnFullscreenToggle" type="button" title="Chế độ đọc toàn màn hình">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+          <span class="label-text">Trình chiếu</span>
         </button>
 
-        <button id="btnAutoPlay" class="icon-btn" type="button" title="Tự động lật trang (Trưng bày/Thuyết trình)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          <span class="btn-text">Tự lật</span>
-        </button>
-
-        <button id="btnFullscreen" class="icon-btn" type="button" title="Chế độ Trình chiếu toàn màn hình">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-          <span class="btn-text">Toàn màn hình</span>
-        </button>
-
-        <button id="btnPrintPdf" class="icon-btn primary" type="button" title="Xuất/In PDF 5 trang chuẩn A4">
+        <button class="btn-action btn-primary" id="btnPrintA4" type="button" title="Xuất toàn bộ 5 trang ra định dạng in ấn PDF">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-          <span class="btn-text">Xuất PDF 5 trang</span>
+          <span class="label-text">Xuất PDF 5 trang</span>
         </button>
       </div>
     </header>
 
     <!-- =====================================================================
-         SÂN KHẤU TRÌNH DIỄN SÁCH LẬT 3D CHÂN THỰC (STPAGEFLIP)
+         SÂN KHẤU SÁCH LẬT 3D (TURN.JS ENGINE KHÔNG LỖI CẮT CHỮ)
          ===================================================================== -->
-    <main class="book-stage" aria-label="Sách lật 3D Truyện Kiều">
-      <div class="flipbook-container" id="flipbookWrapper">
-        <div id="book">
+    <main class="storybook-stage" aria-label="Sách lật điện tử Truyện Kiều">
+      <!-- Mũi tên lật nổi ở 2 bên mép màn hình giống ebook365.vn -->
+      <button class="stage-nav-arrow stage-nav-prev" id="stagePrev" type="button" aria-label="Trang trước" title="Lật về trang trước">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="stage-nav-arrow stage-nav-next" id="stageNext" type="button" aria-label="Trang tiếp" title="Lật sang trang sau">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+      <div class="book-wrapper">
+        <div id="flipbook">
 
           <!-- ═════════════════════════════════════════════════════════════════
-               PAGE 0: TRANG BÌA CHÍNH (HARD COVER - BÌA CỨNG SANG TRỌNG)
+               PAGE 1: TRANG BÌA CHÍNH (FRONT COVER)
                ═════════════════════════════════════════════════════════════════ -->
-          <div class="page" data-density="hard">
-            <div class="cover-frame">
-              <div class="cover-inner-border">
-                <!-- Họa tiết góc triện -->
-                <svg class="corner-ornament tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-                <svg class="corner-ornament tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-                <svg class="corner-ornament bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-                <svg class="corner-ornament br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+          <div class="page hard" data-page="1">
+            <div class="cover-outer-frame">
+              <div class="cover-inner-body">
+                <svg class="corner-trien tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+                <svg class="corner-trien tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+                <svg class="corner-trien bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+                <svg class="corner-trien br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
 
                 <div>
-                  <div class="cover-top-header">Trường THPT Tây Thạnh • Tổ Ngữ Văn</div>
-                  <div class="cover-sub-header">Hoạt động Dạy học Ngoại khóa Khối 12 (Năm học 2026 – 2027)</div>
-                  <svg class="cover-divider-top" viewBox="0 0 160 12" fill="none" stroke="currentColor"><line x1="0" y1="6" x2="60" y2="6" stroke-width="1"/><circle cx="70" cy="6" r="2.5" fill="currentColor"/><path d="M76 3 L84 6 L76 9 Z" fill="currentColor"/><circle cx="90" cy="6" r="2.5" fill="currentColor"/><line x1="100" y1="6" x2="160" y2="6" stroke-width="1"/></svg>
+                  <div class="cover-top-meta">Trường THPT Tây Thạnh • Tổ Ngữ Văn</div>
+                  <div style="font-family:var(--font-ui); font-size:9.5px; color:var(--ink-muted); margin-top:2px;">Chuyên đề Dạy học ngoài không gian lớp học (Năm học 2026 – 2027)</div>
+                  <svg width="120" height="8" viewBox="0 0 120 8" fill="none" stroke="var(--gold-royal)" style="margin:3px 0;"><line x1="0" y1="4" x2="45" y2="4" stroke-width="0.8"/><circle cx="53" cy="4" r="2" fill="var(--gold-royal)"/><line x1="61" y1="4" x2="67" y2="4" stroke-width="1.2"/><circle cx="75" cy="4" r="2" fill="var(--gold-royal)"/><line x1="83" y1="4" x2="120" y2="4" stroke-width="0.8"/></svg>
                 </div>
 
-                <div class="cover-title-area">
-                  <div class="cover-script-intro">Từ Kim Vân Kiều truyện</div>
-                  <h1 class="cover-main-title">ĐẾN TRUYỆN KIỀU</h1>
-                  <p class="cover-subtitle-text">Hành trình tiếp nhận, cải biến và sáng tạo trong văn học trung đại Việt Nam</p>
+                <div class="cover-title-group">
+                  <div class="cover-cursive-accent">Từ Kim Vân Kiều truyện</div>
+                  <h1 class="cover-heading-bold">ĐẾN TRUYỆN KIỀU</h1>
+                  <p class="cover-subtitle-desc">Hành trình tiếp nhận, cải biến và sáng tạo trong văn học trung đại Việt Nam</p>
                 </div>
 
-                <!-- Tranh bìa chính: Thúy Kiều ôm đàn tỳ bà cổ điển -->
-                <div class="cover-art-wrapper">
-                  <img class="cover-art-img" src="assets/cover-kieu.jpg" alt="Tranh bìa Thúy Kiều ôm đàn tỳ bà" />
+                <!-- Họa phẩm bìa Thúy Kiều gảy đàn tỳ bà -->
+                <div class="cover-art-box">
+                  <img src="assets/cover-kieu.jpg" alt="Tranh bìa Thúy Kiều gảy đàn tỳ bà" />
                 </div>
 
-                <div class="cover-credits-block">
-                  <div class="cover-student-group">Thực hiện: Nhóm Học sinh Ngữ văn Khối 12</div>
-                  <div class="cover-school-name">Chủ đề: “Văn học và những góc nhìn từ tuổi trẻ”</div>
-                  <div class="cover-seal-wrap">
-                    <span class="vermilion-box">Cảo Thơm</span>
-                    <span class="cover-imprint">Kỷ yếu E-book Ngoại khóa Ngữ văn 12</span>
+                <div class="cover-footer-info">
+                  <div class="cover-student-text">Thực hiện: Nhóm Học sinh Ngữ văn Khối 12</div>
+                  <div class="cover-sub-text">Chủ đề: “Văn học và những góc nhìn từ tuổi trẻ”</div>
+                  <div class="cover-seal-pill">
+                    <span class="vermilion-seal-text">Cảo Thơm</span>
+                    <span class="cover-seal-label">Kỷ yếu Sách điện tử Ngoại khóa Khối 12</span>
                   </div>
                 </div>
               </div>
             </div>
+            <div class="page-curl-indicator"></div>
           </div>
 
           <!-- ═════════════════════════════════════════════════════════════════
-               PAGE 1 (TRANG 01 NỘI DUNG): TÁC PHẨM VIỆT NAM — TRUYỆN KIỀU
+               PAGE 2: TRANG 01 — TÁC PHẨM VIỆT NAM (TRUYỆN KIỀU)
                ═════════════════════════════════════════════════════════════════ -->
-          <div class="page">
-            <div class="page-frame">
-              <svg class="corner-ornament tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+          <div class="page" data-page="2">
+            <div class="spine-gradient"></div>
+            <div class="page-layout-frame">
+              <svg class="corner-trien tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
 
-              <div class="page-scroll-content">
-                <div class="chapter-heading-bar">
-                  <div>
-                    <span class="chapter-kicker">01 • Tác phẩm Việt Nam</span>
-                    <h2 class="chapter-main-title">TRUYỆN KIỀU – TIẾNG LÒNG NHÂN ĐẠO CỦA NGUYỄN DU</h2>
-                  </div>
-                  <div class="chapter-seal">Kiều</div>
+              <div class="page-header-bar">
+                <div>
+                  <span class="page-kicker">01 • Tác phẩm Việt Nam</span>
+                  <h2 class="page-main-title">TRUYỆN KIỀU – ĐỈNH CAO THƠ NÔM DÂN TỘC</h2>
                 </div>
+                <div class="page-seal-badge">Kiều</div>
+              </div>
 
-                <p class="prose-text lead-cap">
-                  <strong>Truyện Kiều</strong>, tên gọi quen thuộc của <em>Đoạn trường tân thanh</em>, là kiệt tác bất hủ của đại thi hào <strong>Nguyễn Du (1765–1820)</strong>. Tác phẩm được viết bằng chữ Nôm theo thể lục bát truyền thống gồm <strong>3.254 câu thơ</strong>. Qua cuộc đời mười lăm năm chìm nổi của Thúy Kiều, tác giả cất lên tiếng khóc thương cảm sâu sắc đối với số phận con người, đặc biệt là người phụ nữ tài hoa nhưng bạc mệnh dưới chế độ phong kiến.
+              <div class="page-body-container">
+                <p class="prose-paragraph dropcap">
+                  <strong>Đoạn trường tân thanh</strong> (thường gọi là <em>Truyện Kiều</em>) của Đại thi hào dân tộc, Danh nhân văn hóa thế giới <strong>Nguyễn Du</strong> (1765 – 1820) gồm <strong>3.254 câu thơ lục bát</strong>, là viên ngọc sáng chói rực rỡ nhất trong kho tàng văn học cổ điển Việt Nam. Tác phẩm đã vượt qua mọi giới hạn thời gian để trở thành linh hồn của văn hóa dân tộc.
                 </p>
 
-                <!-- Minh họa: Bức tranh Thúy Kiều ôm đàn tỳ bà giữa đóa mẫu đơn -->
-                <figure class="illustration-card">
-                  <img class="illustration-photo" src="assets/kieu-watercolour.jpg" alt="Thúy Kiều ôm đàn tỳ bà giữa hoa mẫu đơn" />
-                  <figcaption class="illustration-caption">Hình tượng Thúy Kiều: Kết tinh của tài sắc, lòng hiếu thảo và nỗi đau thân phận con người.</figcaption>
+                <!-- Minh họa tranh màu nước Thúy Kiều cầm đàn tỳ bà -->
+                <figure class="art-illustration-card">
+                  <img src="assets/kieu-watercolour.jpg" alt="Thúy Kiều bên hoa mẫu đơn và đàn tỳ bà" />
+                  <figcaption class="art-illustration-caption">Họa phẩm Thúy Kiều ôm đàn tỳ bà – biểu tượng của tài hoa, hiếu nghĩa và bi kịch nhân sinh.</figcaption>
                 </figure>
 
-                <div class="parchment-callout">
-                  <div class="callout-header">Tóm tắt cốt truyện 3 phần</div>
-                  <p class="prose-text" style="margin:0; font-size:12.5px;">
-                    Sinh ra trong gia đình trung lưu gia giáo, Thúy Kiều gặp gỡ và đính ước cùng Kim Trọng. Khi gia đình mắc oan khiên, nàng quyết định bán mình chuộc cha và em, bắt đầu 15 năm lưu lạc bị đồng tiền, quyền lực chà đạp. Cuối cùng, Kiều đoàn tụ với gia đình và Kim Trọng, nhưng kết thúc ấy gợi suy ngẫm khôn nguôi về những tổn thương nhân phẩm không thể vẹn nguyên.
+                <div class="callout-box">
+                  <div class="callout-title">Tóm tắt cốt truyện 3 chặng đời</div>
+                  <p class="prose-paragraph" style="margin:0; font-size:11px;">
+                    Gặp gỡ Kim Trọng và thề nguyền đính ước → Gia biến oan khiên, Kiều bán mình chuộc cha và trải qua 15 năm lưu lạc bị đồng tiền, quyền lực vùi dập → Đoàn tụ với Kim Trọng nhưng để lại nỗi đau khôn nguôi về những mất mát nhân phẩm.
                   </p>
                 </div>
 
-                <!-- 4 Thẻ nhân vật tiêu biểu -->
-                <div class="characters-grid">
-                  <div class="char-mini-card">
-                    <strong>Thúy Kiều</strong>
-                    Tài sắc vẹn toàn, hiếu nghĩa, giàu đức hi sinh; biểu tượng cho vẻ đẹp bị xã hội cũ vùi dập.
+                <!-- 4 Thẻ nhân vật tinh tế -->
+                <div class="characters-2x2-grid">
+                  <div class="character-pill-card">
+                    <strong>Thúy Kiều</strong> Tài sắc vẹn toàn, hiếu nghĩa, giàu đức vị tha; nạn nhân của xã hội phong kiến bạo tàn.
                   </div>
-                  <div class="char-mini-card">
-                    <strong>Kim Trọng</strong>
-                    Thư sinh phong nhã, biểu tượng của tình yêu thủy chung, vượt lên lễ giáo để trân trọng phẩm giá nàng Kiều.
+                  <div class="character-pill-card">
+                    <strong>Kim Trọng</strong> Thư sinh phong nhã, biểu tượng của tình yêu thủy chung, vượt lễ giáo để trân trọng Kiều.
                   </div>
-                  <div class="char-mini-card">
-                    <strong>Từ Hải</strong>
-                    Anh hùng mang tầm vóc vũ trụ “đội trời đạp đất”, hiện thân cho công lý, tự do và phản kháng xã hội.
+                  <div class="character-pill-card">
+                    <strong>Từ Hải</strong> Anh hùng "đội trời đạp đất", hiện thân cho công lý, tự do và tinh thần phản kháng xã hội.
                   </div>
-                  <div class="char-mini-card">
-                    <strong>Hoạn Thư</strong>
-                    Nhân vật có chiều sâu tâm lý tinh vi, sắc sảo; phơi bày bi kịch ghen tuông của chế độ đa thê phong kiến.
+                  <div class="character-pill-card">
+                    <strong>Hoạn Thư</strong> Nhân vật đa chiều, sắc sảo, phơi bày mâu thuẫn bi kịch gia đình trong chế độ đa thê.
                   </div>
                 </div>
 
-                <div class="luc-bat-box">
-                  <span class="c6">Đau đớn thay phận đàn bà!</span>
-                  <span class="c8">Lời rằng bạc mệnh cũng là lời chung.</span>
-                </div>
-
-                <blockquote class="critic-quote-box">
+                <blockquote class="quote-critic-mini">
                   “Lời văn tả ra hình như có máu chảy ở đầu ngọn bút, nước mắt thấm ở trên tờ giấy, khiến ai đọc đến cũng phải thấm thía ngậm ngùi…”
                   <cite>— Mộng Liên Đường chủ nhân (1820)</cite>
                 </blockquote>
               </div>
 
-              <div class="page-folio">
+              <div class="page-footer-folio">
                 <span>E-book Ngữ văn 12 • THPT Tây Thạnh</span>
-                <span class="folio-page-num">Trang 1 / 5</span>
+                <span class="folio-num-bold">Trang 1 / 5</span>
               </div>
             </div>
+            <div class="page-curl-indicator"></div>
           </div>
 
           <!-- ═════════════════════════════════════════════════════════════════
-               PAGE 2 (TRANG 02 NỘI DUNG): KẾ THỪA VÀ SÁNG TẠO CỦA NGUYỄN DU
+               PAGE 3: TRANG 02 — KẾ THỪA VÀ SÁNG TẠO (NGUYỄN DU)
                ═════════════════════════════════════════════════════════════════ -->
-          <div class="page">
-            <div class="page-frame">
-              <svg class="corner-ornament tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+          <div class="page" data-page="3">
+            <div class="spine-gradient"></div>
+            <div class="page-layout-frame">
+              <svg class="corner-trien tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
 
-              <div class="page-scroll-content">
-                <div class="chapter-heading-bar">
-                  <div>
-                    <span class="chapter-kicker">02 • Kế thừa và Sáng tạo</span>
-                    <h2 class="chapter-main-title">NGUYỄN DU ĐÃ SÁNG TẠO NHƯ THẾ NÀO?</h2>
-                  </div>
-                  <div class="chapter-seal">Biến</div>
+              <div class="page-header-bar">
+                <div>
+                  <span class="page-kicker">02 • Kế thừa và Sáng tạo</span>
+                  <h2 class="page-main-title">NGUYỄN DU ĐÃ SÁNG TẠO NHƯ THẾ NÀO?</h2>
                 </div>
+                <div class="page-seal-badge">Biến</div>
+              </div>
 
-                <p class="prose-text lead-cap">
-                  Tiếp nhận cốt truyện từ tiểu thuyết chương hồi <em>Kim Vân Kiều truyện</em> của Thanh Tâm Tài Nhân, Nguyễn Du <strong>tuyệt đối không sao chép hay phiên dịch cơ học</strong>. Ông tái sinh chất liệu tự sự ấy bằng một cảm quan nghệ thuật thuần Việt, tạo nên một kiệt tác có giá trị tư tưởng và thẩm mỹ độc lập hoàn toàn.
+              <div class="page-body-container">
+                <p class="prose-paragraph dropcap">
+                  Tiếp nhận cốt truyện từ tiểu thuyết chương hồi <em>Kim Vân Kiều truyện</em>, Nguyễn Du <strong>tuyệt đối không dịch thuật hay sao chép máy móc</strong>. Ông chưng cất và tái sinh câu chuyện cũ bằng một trái tim nhân đạo và ngôn ngữ thơ Nôm thuần Việt, tạo nên một kiệt tác có giá trị độc lập vượt bậc.
                 </p>
 
-                <!-- Minh họa: Bức tranh minh họa Kiều và Vân của họa sĩ Nguyễn Công Hoan -->
-                <figure class="illustration-card">
-                  <img class="illustration-photo" src="assets/kieu-van.jpg" alt="Tranh Thúy Kiều và Thúy Vân - Nguyễn Công Hoan" />
-                  <figcaption class="illustration-caption">Họa phẩm Kiều &amp; Vân (Nguyễn Công Hoan minh họa) – vẻ đẹp thuần hậu trong tâm thức dân tộc.</figcaption>
+                <!-- Minh họa: Bức tranh Thúy Kiều và Thúy Vân của danh họa Nguyễn Công Hoan -->
+                <figure class="art-illustration-card">
+                  <img src="assets/kieu-van.jpg" alt="Tranh Thúy Kiều và Thúy Vân - Nguyễn Công Hoan" />
+                  <figcaption class="art-illustration-caption">Họa phẩm Kiều &amp; Vân (Nguyễn Công Hoan minh họa) – vẻ đẹp thuần hậu trong tâm thức dân tộc.</figcaption>
                 </figure>
 
-                <!-- 4 Phương diện sáng tạo -->
-                <div class="aspects-grid-2x2">
-                  <div class="aspect-item-box">
-                    <div class="aspect-item-title">1. Thể loại &amp; Ngôn ngữ</div>
-                    <p>Chuyển thể từ văn xuôi chương hồi Hán văn sang <strong>truyện thơ Nôm lục bát</strong> giàu nhạc tính và sức nén cảm xúc biểu cảm phi thường.</p>
+                <!-- Lưới 4 phương diện sáng tạo -->
+                <div class="aspects-grid-container">
+                  <div class="aspect-box-item">
+                    <div class="aspect-box-title">1. Thể loại &amp; Ngôn ngữ</div>
+                    <p>Chuyển từ văn xuôi chương hồi chữ Hán sang <strong>truyện thơ Nôm lục bát</strong> giàu nhạc tính và sức nén cảm xúc biểu cảm phi thường.</p>
                   </div>
-                  <div class="aspect-item-box">
-                    <div class="aspect-item-title">2. Miêu tả nội tâm</div>
-                    <p>Biến các biến cố bên ngoài thành chiều sâu tâm lý giằng xé; vận dụng bút pháp <strong>tả cảnh ngụ tình</strong> đạt đến độ điêu luyện bậc thầy.</p>
+                  <div class="aspect-box-item">
+                    <div class="aspect-box-title">2. Miêu tả nội tâm</div>
+                    <p>Đào sâu thế giới tâm lý giằng xé; vận dụng bút pháp <strong>tả cảnh ngụ tình</strong> tinh tế: <em>“Người buồn cảnh có vui đâu bao giờ”</em>.</p>
                   </div>
-                  <div class="aspect-item-box">
-                    <div class="aspect-item-title">3. Cảm hứng nhân đạo</div>
-                    <p>Lược bỏ tính đạo lý răn dạy và sự báo thù tàn nhẫn, nâng tầm tiếng nói xót thương, bênh vực quyền sống và phẩm giá của con người.</p>
+                  <div class="aspect-box-item">
+                    <div class="aspect-box-title">3. Cảm hứng nhân đạo</div>
+                    <p>Lược bỏ tính răn dạy đạo lý giáo điều và sự báo oán tàn nhẫn, nâng tầm tiếng nói xót thương phẩm giá và quyền sống con người.</p>
                   </div>
-                  <div class="aspect-item-box">
-                    <div class="aspect-item-title">4. Bản sắc dân tộc</div>
-                    <p>Vận dụng thành ngữ, tục ngữ, ca dao vào thể thơ lục bát, đưa tiếng Việt đạt đỉnh cao rực rỡ của ngôn ngữ văn học bác học.</p>
+                  <div class="aspect-box-item">
+                    <div class="aspect-box-title">4. Bản sắc dân tộc</div>
+                    <p>Nhuần nhuyễn ca dao, thành ngữ dân gian vào ngôn ngữ bác học, nâng tiếng Việt đạt đỉnh cao rực rỡ của ngôn ngữ văn học dân tộc.</p>
                   </div>
                 </div>
 
                 <!-- Bảng giải phẫu vi văn bản đối sánh -->
-                <div class="micro-compare-wrap">
-                  <div class="micro-head">✦ Giải phẫu Vi văn bản: Cảnh Viếng mộ Đạm Tiên</div>
-                  <div class="micro-grid">
-                    <div class="micro-cell source">
-                      <div class="micro-tag">Kim Vân Kiều truyện (Văn xuôi)</div>
-                      “Đi tảo mộ về, Thúy Kiều thấy một nấm mồ lạnh lẽo không ai thăm viếng. Hỏi em biết là mộ Đạm Tiên tài sắc mà chết yểu, Kiều rơi lệ xót thương cho phận mình.”
+                <div class="micro-comparison-box">
+                  <div class="micro-comparison-grid">
+                    <div class="micro-column source-col">
+                      <span class="micro-badge">Nguyên tác Trung Hoa</span>
+                      Kiều đi tảo mộ về, thấy nấm mồ vô chủ của Đạm Tiên thì rơi nước mắt xót xa cho hoàn cảnh cô quạnh của người ca kỹ.
                     </div>
-                    <div class="micro-cell target">
-                      <div class="micro-tag">Truyện Kiều (Thơ lục bát Nôm)</div>
+                    <div class="micro-column target-col">
+                      <span class="micro-badge">Sáng tạo của Nguyễn Du</span>
                       “Sè sè nấm đất bên đàng,<br>Dầu dầu ngọn cỏ nửa vàng nửa xanh…<br>Đau đớn thay phận đàn bà,<br>Lời rằng bạc mệnh cũng là lời chung.”
                     </div>
                   </div>
                 </div>
 
-                <blockquote class="critic-quote-box">
-                  “Nguyễn Du viết Kiều, đất nước hóa thành văn.” Giá trị tiếp nhận nằm ở năng lực biến đổi chất liệu cũ, tạo nên cách thể hiện và ý nghĩa nhân sinh mới.
-                  <cite>— Chế Lan Viên &amp; Đúc kết lý luận Ngữ văn 12</cite>
+                <blockquote class="quote-critic-mini">
+                  “Nguyễn Du viết Kiều, đất nước hóa thành văn.” Kế thừa không phải là sao chép — mà là cuộc đối thoại sáng tạo giữa chất liệu cổ và bản sắc dân tộc.
+                  <cite>— Chế Lan Viên &amp; Đúc kết Ngữ văn 12</cite>
                 </blockquote>
               </div>
 
-              <div class="page-folio">
+              <div class="page-footer-folio">
                 <span>E-book Ngữ văn 12 • THPT Tây Thạnh</span>
-                <span class="folio-page-num">Trang 2 / 5</span>
+                <span class="folio-num-bold">Trang 2 / 5</span>
               </div>
             </div>
+            <div class="page-curl-indicator"></div>
           </div>
 
           <!-- ═════════════════════════════════════════════════════════════════
-               PAGE 3 (TRANG 03 NỘI DUNG): TÁC PHẨM NƯỚC NGOÀI — KIM VÂN KIỀU TRUYỆN
+               PAGE 4: TRANG 03 — TÁC PHẨM NGUỒN (KIM VÂN KIỀU TRUYỆN)
                ═════════════════════════════════════════════════════════════════ -->
-          <div class="page">
-            <div class="page-frame">
-              <svg class="corner-ornament tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+          <div class="page" data-page="4">
+            <div class="spine-gradient"></div>
+            <div class="page-layout-frame">
+              <svg class="corner-trien tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
 
-              <div class="page-scroll-content">
-                <div class="chapter-heading-bar">
-                  <div>
-                    <span class="chapter-kicker">03 • Tác phẩm nước ngoài</span>
-                    <h2 class="chapter-main-title">KIM VÂN KIỀU TRUYỆN – CỐT TRUYỆN NGUỒN</h2>
-                  </div>
-                  <div class="chapter-seal">Thư</div>
+              <div class="page-header-bar">
+                <div>
+                  <span class="page-kicker">03 • Tác phẩm nước ngoài</span>
+                  <h2 class="page-main-title">KIM VÂN KIỀU TRUYỆN – CỐT TRUYỆN NGUỒN</h2>
                 </div>
+                <div class="page-seal-badge">Nguồn</div>
+              </div>
 
-                <p class="prose-text lead-cap">
-                  <strong>Kim Vân Kiều truyện</strong> (金雲翹傳) của <strong>Thanh Tâm Tài Nhân</strong> là bộ tiểu thuyết chương hồi bằng văn xuôi chữ Hán gồm <strong>20 hồi</strong>, ra đời vào thời Minh – Thanh ở Trung Quốc. Tác phẩm kể câu chuyện về Vương Thúy Kiều cùng những biến cố về tình yêu, gia đình, chữ hiếu và chuỗi ngày lưu lạc.
+              <div class="page-body-container">
+                <p class="prose-paragraph dropcap">
+                  <strong>Kim Vân Kiều truyện</strong> (金雲翹傳) của tác giả <strong>Thanh Tâm Tài Nhân</strong> là tiểu thuyết chương hồi bằng văn xuôi chữ Hán gồm <strong>20 hồi</strong>, ra đời vào thời Minh – Thanh ở Trung Quốc. Tác phẩm kể câu chuyện về Vương Thúy Kiều trải qua các biến cố gia đình, tình yêu và số phận, được xem là tác phẩm nguồn có quan hệ trực tiếp với <em>Truyện Kiều</em>.
                 </p>
 
-                <!-- Minh họa: Bìa ấn bản Kim Vân Kiều truyện cổ -->
-                <figure class="illustration-card">
-                  <img class="illustration-photo" src="assets/kim-van-kieu.jpg" alt="Ấn bản Kim Vân Kiều truyện - Trương Vĩnh Ký dịch" />
-                  <figcaption class="illustration-caption">Ấn bản “Kim Vân Kiều truyện” – nguồn chất liệu tự sự mà Nguyễn Du đã tiếp nhận và nâng tầm.</figcaption>
+                <!-- Minh họa: Bìa ấn bản Kim Vân Kiều truyện -->
+                <figure class="art-illustration-card">
+                  <img src="assets/kim-van-kieu.jpg" alt="Ấn bản Kim Vân Kiều truyện" />
+                  <figcaption class="art-illustration-caption">Ấn bản “Kim Vân Kiều truyện” – chất liệu nền tảng làm nổi bật tầm vóc sáng tạo của Nguyễn Du.</figcaption>
                 </figure>
 
-                <div class="parchment-callout">
-                  <div class="callout-header">3 Đặc điểm thi pháp tiểu thuyết chương hồi</div>
-                  <ul class="ref-list-styled" style="padding-left:14px; margin:2px 0;">
-                    <li><strong>Kết cấu tự sự tuyến tính 20 hồi:</strong> Diễn biến câu chuyện triển khai theo trình tự thời gian với chuỗi biến cố, sự kiện nối tiếp kịch tính.</li>
-                    <li><strong>Thiên về hành động và đối thoại:</strong> Nhân vật bộc lộ qua lời nói giải thích lý lẽ cặn kẽ và hành động ứng phó thực tế trước nghịch cảnh.</li>
-                    <li><strong>Phản ánh quy ước xã hội thời đại:</strong> Khắc họa trật tự Nho gia, luật nhân quả và quan niệm về người tài tử giai nhân thời phong kiến Trung Hoa.</li>
-                  </ul>
+                <div class="callout-box">
+                  <div class="callout-title">3 Đặc điểm thi pháp tiểu thuyết chương hồi</div>
+                  <p class="prose-paragraph" style="margin:0; font-size:10.5px;">
+                    • <strong>Kết cấu tuyến tính 20 hồi:</strong> Diễn biến tự sự theo trình tự thời gian với chuỗi sự kiện, hành động nối tiếp kịch tính.<br>
+                    • <strong>Thiên về hành động và đối thoại:</strong> Tính cách nhân vật bộc lộ qua lời đối thoại rành mạch và hành vi ứng phó thực tế.<br>
+                    • <strong>Quy ước đạo lý thời đại:</strong> Phản ánh quan niệm Nho giáo về trật tự gia tộc, chữ trinh và luật nhân quả báo ứng thời Minh – Thanh.
+                  </p>
                 </div>
 
-                <!-- Góc Cảo Thơm: Giải mã thuật ngữ Ngữ văn 12 -->
-                <div class="micro-head" style="margin-top:10px;">✦ Góc Cảo Thơm — Thuật ngữ Ngữ văn 12</div>
-                <div class="glossary-grid">
-                  <div class="gloss-card">
+                <!-- Góc Cảo Thơm: 4 thuật ngữ Ngữ văn 12 -->
+                <div style="font-family:var(--font-ui); font-size:9.5px; font-weight:700; color:var(--crimson-royal); text-transform:uppercase; margin-top:1px;">
+                  ✦ Góc Cảo Thơm — Thuật ngữ Ngữ văn 12
+                </div>
+                <div class="glossary-2x2-grid">
+                  <div class="gloss-mini-card">
                     <strong>Liên văn bản:</strong> Mối quan hệ đối thoại, tiếp nhận và chuyển hóa sáng tạo giữa tác phẩm mới với nguồn chất liệu có trước.
                   </div>
-                  <div class="gloss-card">
-                    <strong>Tiểu thuyết chương hồi:</strong> Thể loại tự sự văn xuôi cổ điển chia theo hồi, đầu hồi có đôi câu đối, cuối hồi có lời dẫn kết mở.
+                  <div class="gloss-mini-card">
+                    <strong>Tiểu thuyết chương hồi:</strong> Thể loại tự sự văn xuôi cổ điển chia theo hồi, mỗi hồi có đầu đề đối ngẫu giàu kịch tính.
                   </div>
-                  <div class="gloss-card">
-                    <strong>Truyện thơ Nôm lục bát:</strong> Thể loại tự sự bằng thơ Nôm Việt Nam, kết hợp kể chuyện biến cố với trữ tình sâu sắc.
+                  <div class="gloss-mini-card">
+                    <strong>Truyện thơ Nôm lục bát:</strong> Thể loại tự sự bằng thơ Nôm của Việt Nam, kết hợp tự sự biến cố với trữ tình sâu lắng.
                   </div>
-                  <div class="gloss-card">
-                    <strong>Tả cảnh ngụ tình:</strong> Bút pháp dùng thiên nhiên làm tấm gương phản chiếu tâm trạng sâu kín và số phận con người.
+                  <div class="gloss-mini-card">
+                    <strong>Tả cảnh ngụ tình:</strong> Mượn hình ảnh thiên nhiên làm tấm gương phản chiếu tâm trạng sâu kín của nhân vật.
                   </div>
                 </div>
 
-                <p class="prose-text" style="font-size:11.5px; font-style:italic; color:var(--ink-muted); margin-top:6px;">
-                  <em>Lưu ý học thuật:</em> Niên đại chính xác và lai lịch Thanh Tâm Tài Nhân vẫn còn những quan điểm thảo luận trong giới nghiên cứu văn học sử.
+                <p class="prose-paragraph" style="font-size:10px; font-style:italic; color:var(--ink-muted); margin:0;">
+                  <em>Lưu ý học thuật:</em> Thông tin về niên đại sáng tác và lai lịch Thanh Tâm Tài Nhân vẫn còn những quan điểm thảo luận trong giới nghiên cứu.
                 </p>
               </div>
 
-              <div class="page-folio">
+              <div class="page-footer-folio">
                 <span>E-book Ngữ văn 12 • THPT Tây Thạnh</span>
-                <span class="folio-page-num">Trang 3 / 5</span>
+                <span class="folio-num-bold">Trang 3 / 5</span>
               </div>
             </div>
+            <div class="page-curl-indicator"></div>
           </div>
 
           <!-- ═════════════════════════════════════════════════════════════════
-               PAGE 4 (TRANG 04 NỘI DUNG): ĐỐI CHIẾU, TỔNG KẾT & GÓC NHÌN TUỔI TRẺ
+               PAGE 5: TRANG 04 — ĐỐI CHIẾU & GÓC NHÌN TUỔI TRẺ
                ═════════════════════════════════════════════════════════════════ -->
-          <div class="page">
-            <div class="page-frame">
-              <svg class="corner-ornament tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-              <svg class="corner-ornament br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+          <div class="page" data-page="5">
+            <div class="spine-gradient"></div>
+            <div class="page-layout-frame">
+              <svg class="corner-trien tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+              <svg class="corner-trien br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
 
-              <div class="page-scroll-content">
-                <div class="chapter-heading-bar">
-                  <div>
-                    <span class="chapter-kicker">04 • Đối chiếu &amp; Kết luận</span>
-                    <h2 class="chapter-main-title">ĐỐI CHIẾU HAI TÁC PHẨM &amp; GÓC NHÌN TUỔI TRẺ</h2>
-                  </div>
-                  <div class="chapter-seal">Đối</div>
+              <div class="page-header-bar">
+                <div>
+                  <span class="page-kicker">04 • Đối chiếu &amp; Kết luận</span>
+                  <h2 class="page-main-title">ĐỐI CHIẾU HAI TÁC PHẨM &amp; GÓC NHÌN TUỔI TRẺ</h2>
                 </div>
+                <div class="page-seal-badge">Tổng</div>
+              </div>
 
-                <p class="prose-text lead-cap" style="margin-bottom:6px;">
-                  Đặt hai tác phẩm cạnh nhau giúp người đọc nhận diện rõ ranh giới giữa <strong>kế thừa chất liệu</strong> và <strong>sáng tạo nghệ thuật độc lập</strong>.
-                </p>
-
-                <!-- Bảng so sánh 5 phương diện -->
-                <table class="table-compare-clean">
+              <div class="page-body-container">
+                <!-- Bảng so sánh 5 tiêu chí -->
+                <table class="comparison-table-clean">
                   <thead>
                     <tr>
                       <th>Phương diện</th>
@@ -1507,523 +1419,342 @@
                   </thead>
                   <tbody>
                     <tr>
-                      <td class="aspect-name">1. Thể loại</td>
+                      <td class="aspect-col">Thể loại</td>
                       <td>Tiểu thuyết chương hồi văn xuôi Hán văn (20 hồi).</td>
                       <td>Truyện thơ Nôm viết bằng thể lục bát (3.254 câu).</td>
                     </tr>
                     <tr>
-                      <td class="aspect-name">2. Cốt truyện</td>
-                      <td>Cốt truyện tự sự nguồn, nhiều tình tiết rườm rà.</td>
-                      <td>Tiếp nhận khung truyện, tinh lọc và tổ chức lại giàu nhịp điệu.</td>
+                      <td class="aspect-col">Cốt truyện</td>
+                      <td>Nền tảng tự sự nguồn, nhiều chi tiết vụn vặt.</td>
+                      <td>Tiếp nhận khung truyện, chắt lọc và tổ chức lại giàu nhịp điệu.</td>
                     </tr>
                     <tr>
-                      <td class="aspect-name">3. Cách thể hiện</td>
-                      <td>Kể chuyện qua biến cố, sự kiện và đối thoại giải thích.</td>
+                      <td class="aspect-col">Cách thể hiện</td>
+                      <td>Kể qua sự kiện, hành động và đối thoại giải thích.</td>
                       <td>Cô đọng bằng ngôn ngữ thơ, ẩn dụ và tả cảnh ngụ tình.</td>
                     </tr>
                     <tr>
-                      <td class="aspect-name">4. Trọng tâm</td>
+                      <td class="aspect-col">Trọng tâm</td>
                       <td>Xung đột tình – tiền – quyền và đạo lý quả báo.</td>
                       <td>Giảm tính báo thù; nâng cao tiếng khóc nhân đạo thương người.</td>
                     </tr>
                     <tr>
-                      <td class="aspect-name">5. Dấu ấn văn hóa</td>
+                      <td class="aspect-col">Văn hóa</td>
                       <td>Gắn liền với xã hội tài tử giai nhân Trung Hoa.</td>
                       <td>Kết tinh tâm hồn, tiếng nói và bản sắc văn hóa Việt Nam.</td>
                     </tr>
                   </tbody>
                 </table>
 
-                <!-- Minh họa: Cảnh gặp gỡ ngày Thanh minh bên cầu đá -->
-                <figure class="illustration-card" style="margin:6px 0;">
-                  <img class="illustration-photo" style="max-height:140px;" src="assets/thanh-minh.jpg" alt="Cảnh du xuân tiết Thanh minh gặp Kim Trọng" />
-                  <figcaption class="illustration-caption">Hội Đạp thanh tiết Thanh minh – khởi nguồn định mệnh được thi vị hóa tuyệt đẹp trong Truyện Kiều.</figcaption>
+                <!-- Minh họa cảnh gặp gỡ ngày Thanh minh bên cầu đá -->
+                <figure class="art-illustration-card" style="margin:1px 0;">
+                  <img src="assets/thanh-minh.jpg" style="max-height:95px;" alt="Cảnh du xuân tiết Thanh minh" />
+                  <figcaption class="art-illustration-caption">Hội Đạp thanh tiết Thanh minh – khúc dạo đầu định mệnh được thi vị hóa tuyệt đẹp trong Truyện Kiều.</figcaption>
                 </figure>
 
-                <!-- Chuyên đề góc nhìn tuổi trẻ -->
-                <div class="parchment-callout" style="margin-top:6px;">
-                  <div class="callout-header">Góc nhìn từ tuổi trẻ giữa kỷ nguyên số</div>
-                  <p class="prose-text" style="margin:0; font-size:12px;">
-                    Với học sinh lớp 12 hôm nay — giữa dòng chảy văn hóa đa phương tiện, chuyển thể điện ảnh và sáng tạo số — bài học từ Nguyễn Du nhắc nhở: <em>Kế thừa tinh hoa không phải là sao chép vô hồn</em>. Người sáng tạo trẻ chỉ làm nên tác phẩm đích thực khi có góc nhìn độc lập, rung cảm chân thành và bản sắc văn hóa của chính dân tộc mình.
+                <!-- Góc nhìn tuổi trẻ thời đại số -->
+                <div class="callout-box">
+                  <div class="callout-title">Góc nhìn từ tuổi trẻ giữa kỷ nguyên số</div>
+                  <p class="prose-paragraph" style="margin:0; font-size:10.5px;">
+                    Với học sinh lớp 12 hôm nay — giữa làn sóng văn hóa số, chuyển thể điện ảnh và nghệ thuật đương đại — bài học từ Nguyễn Du nhắc nhở: <em>Kế thừa tinh hoa thế giới không đồng nghĩa với sao chép vô hồn</em>. Tác phẩm chỉ có sức sống bất diệt khi người sáng tạo trẻ biết đem trái tim rung cảm, góc nhìn độc lập và bản sắc văn hóa dân tộc để tái sinh di sản.
                   </p>
                 </div>
 
                 <!-- Tài liệu tham khảo -->
-                <div class="micro-head" style="margin-top:8px;">✦ Tài liệu tham khảo chính thống</div>
-                <ol class="ref-list-styled">
-                  <li>Nguyễn Du, <em>Truyện Kiều</em> (Đoạn trường tân thanh), bản chú giải GS. Nguyễn Thạch Giang.</li>
-                  <li>Thanh Tâm Tài Nhân, <em>Kim Vân Kiều truyện</em>, bản dịch NXB Văn học.</li>
-                  <li>SGK Ngữ văn 12 (Tập 1), Bộ Giáo dục và Đào tạo.</li>
-                </ol>
+                <div style="font-family:var(--font-ui); font-size:9px; color:var(--ink-muted); line-height:1.35;">
+                  <strong>Tài liệu tham khảo:</strong> (1) Nguyễn Du, <em>Truyện Kiều</em> (GS. Nguyễn Thạch Giang khảo đính); (2) Thanh Tâm Tài Nhân, <em>Kim Vân Kiều truyện</em> (bản dịch NXB Văn học); (3) SGK Ngữ văn 12 Tập 1, Bộ GD&amp;ĐT.
+                </div>
               </div>
 
-              <div class="page-folio">
+              <div class="page-footer-folio">
                 <span>E-book Ngữ văn 12 • THPT Tây Thạnh</span>
-                <span class="folio-page-num">Trang 4 / 5</span>
+                <span class="folio-num-bold">Trang 4 / 5</span>
               </div>
             </div>
+            <div class="page-curl-indicator"></div>
           </div>
 
           <!-- ═════════════════════════════════════════════════════════════════
-               PAGE 5: BÌA SAU (HARD COVER - BÌA CỨNG KẾT THÚC)
+               PAGE 6: BÌA SAU (BACK COVER)
                ═════════════════════════════════════════════════════════════════ -->
-          <div class="page" data-density="hard">
-            <div class="back-cover-frame">
+          <div class="page hard" data-page="6">
+            <div class="back-cover-outer">
               <div class="back-cover-inner">
-                <svg class="corner-ornament tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-                <svg class="corner-ornament tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-                <svg class="corner-ornament bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
-                <svg class="corner-ornament br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+                <svg class="corner-trien tl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+                <svg class="corner-trien tr" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+                <svg class="corner-trien bl" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
+                <svg class="corner-trien br" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 18V2h16M2 8h6V2M8 24V8h16"/></svg>
 
                 <div>
-                  <div class="cover-top-header" style="color:var(--crimson-deep); font-size:11px;">KỶ YẾU NGOẠI KHÓA NGỮ VĂN KHỐI 12</div>
-                  <div class="cover-sub-header">Trường THPT Tây Thạnh • Năm học 2026 – 2027</div>
-                  <svg class="cover-divider-top" viewBox="0 0 160 12" fill="none" stroke="currentColor"><line x1="0" y1="6" x2="60" y2="6" stroke-width="1"/><circle cx="70" cy="6" r="2.5" fill="currentColor"/><path d="M76 3 L84 6 L76 9 Z" fill="currentColor"/><circle cx="90" cy="6" r="2.5" fill="currentColor"/><line x1="100" y1="6" x2="160" y2="6" stroke-width="1"/></svg>
+                  <div style="font-family:var(--font-ui); font-size:11px; font-weight:700; letter-spacing:1.3px; color:var(--crimson-deep); text-transform:uppercase;">
+                    KỶ YẾU NGOẠI KHÓA NGỮ VĂN KHỐI 12
+                  </div>
+                  <div style="font-family:var(--font-ui); font-size:9.5px; color:var(--ink-muted); margin-top:2px;">
+                    Trường THPT Tây Thạnh • Năm học 2026 – 2027
+                  </div>
+                  <svg width="120" height="8" viewBox="0 0 120 8" fill="none" stroke="var(--gold-royal)" style="margin:4px 0;"><line x1="0" y1="4" x2="45" y2="4" stroke-width="0.8"/><circle cx="53" cy="4" r="2" fill="var(--gold-royal)"/><line x1="61" y1="4" x2="67" y2="4" stroke-width="1.2"/><circle cx="75" cy="4" r="2" fill="var(--gold-royal)"/><line x1="83" y1="4" x2="120" y2="4" stroke-width="0.8"/></svg>
                 </div>
 
-                <div style="max-width:340px; margin:20px auto;">
-                  <blockquote style="font-family:var(--font-display); font-style:italic; font-size:14px; line-height:1.75; color:var(--crimson-royal); margin-bottom:12px;">
+                <div style="max-width:320px; margin:12px auto;">
+                  <blockquote style="font-family:var(--font-title); font-style:italic; font-size:13px; line-height:1.7; color:var(--crimson-royal); margin-bottom:6px;">
                     “Tiếng thơ ai động đất trời,<br>
                     Nghe như non nước vọng lời ngàn thu.<br>
                     Nghìn năm sau nhớ Nguyễn Du,<br>
                     Tiếng thương như tiếng mẹ ru những ngày…”
                   </blockquote>
-                  <cite style="font-family:var(--font-ui); font-size:11px; font-weight:600; color:var(--ink-muted); display:block;">— Tố Hữu (Kính gửi cụ Nguyễn Du)</cite>
+                  <cite style="font-family:var(--font-ui); font-size:10px; font-weight:600; color:var(--ink-muted); display:block;">— Tố Hữu (Kính gửi cụ Nguyễn Du)</cite>
                 </div>
 
-                <div class="parchment-callout" style="max-width:360px; text-align:center; border-left:none; border-top:2px solid var(--crimson-royal);">
-                  <div class="callout-header" style="font-size:11px;">Thông điệp bế mạc</div>
-                  <p class="prose-text" style="margin:0; font-size:12px; text-align:center;">
+                <div class="callout-box" style="max-width:330px; text-align:center; border-left:none; border-top:2px solid var(--crimson-royal);">
+                  <div class="callout-title" style="font-size:10px;">Thông điệp bế mạc</div>
+                  <p class="prose-paragraph" style="margin:0; font-size:11px; text-align:center;">
                     <strong>Tiếp nhận tinh hoa của nhân loại — Bồi đắp và tỏa sáng bản sắc văn hóa Việt Nam.</strong>
                   </p>
                 </div>
 
-                <div style="margin-top:10px;">
-                  <div class="vermilion-box" style="display:inline-block; font-size:11px; padding:4px 10px; margin-bottom:6px;">Tây Thạnh • 2026</div>
-                  <div style="font-family:var(--font-ui); font-size:10px; color:var(--ink-light); letter-spacing:0.5px;">E-book dự thi Chuyên đề Dạy học ngoài không gian lớp học</div>
+                <div style="margin-top:4px;">
+                  <div class="vermilion-seal-text" style="display:inline-block; font-size:9.5px; padding:2px 7px; margin-bottom:3px;">Tây Thạnh • 2026</div>
+                  <div style="font-family:var(--font-ui); font-size:9px; color:var(--ink-light);">Sản phẩm tham gia Chuyên đề Học tập ngoài không gian lớp học</div>
                 </div>
               </div>
             </div>
           </div>
 
-        </div><!-- /#book -->
-      </div><!-- /.flipbook-container -->
+        </div><!-- /#flipbook -->
+      </div><!-- /.book-wrapper -->
     </main>
 
     <!-- =====================================================================
-         THANH CHÂN TRANG (BOTTOM NAVIGATION BAR)
+         THANH CHÂN TRANG ĐIỀU HƯỚNG TAB NHANH
          ===================================================================== -->
-    <footer class="app-footer" role="contentinfo">
-      <div class="page-nav-controls">
-        <button id="btnPrev" class="nav-round-btn" type="button" aria-label="Lật về trang trước" title="Lật trang trước (←)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
-        </button>
-
-        <span class="page-counter-tag" id="pageIndicator">Bìa sách</span>
-
-        <button id="btnNext" class="nav-round-btn" type="button" aria-label="Lật sang trang sau" title="Lật trang sau (→)">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-        </button>
-      </div>
-
-      <div class="chapter-pills-bar">
-        <button class="ch-pill active" type="button" data-page="0">Bìa</button>
-        <button class="ch-pill" type="button" data-page="1">Trang 1 <span class="pill-full-text">• Tác phẩm Việt</span></button>
-        <button class="ch-pill" type="button" data-page="2">Trang 2 <span class="pill-full-text">• Sáng tạo</span></button>
-        <button class="ch-pill" type="button" data-page="3">Trang 3 <span class="pill-full-text">• Tác phẩm nguồn</span></button>
-        <button class="ch-pill" type="button" data-page="4">Trang 4 <span class="pill-full-text">• Đối chiếu</span></button>
-        <button class="ch-pill" type="button" data-page="5">Bìa sau</button>
-      </div>
+    <footer class="storybook-footer" role="contentinfo">
+      <button class="tab-jump-btn active" type="button" data-page="1">Bìa sách</button>
+      <button class="tab-jump-btn" type="button" data-page="2">Trang 1 • Truyện Kiều</button>
+      <button class="tab-jump-btn" type="button" data-page="3">Trang 2 • Sáng tạo</button>
+      <button class="tab-jump-btn" type="button" data-page="4">Trang 3 • Cốt truyện nguồn</button>
+      <button class="tab-jump-btn" type="button" data-page="5">Trang 4 • Đối chiếu</button>
+      <button class="tab-jump-btn" type="button" data-page="6">Bìa sau</button>
     </footer>
   </div>
 
-  <!-- =====================================================================
-       POPUP MỤC LỤC NHANH
-       ===================================================================== -->
-  <div class="overlay-backdrop" id="tocModal">
-    <div class="popup-dialog">
-      <div class="popup-header">
-        <h3>Mục lục 5 trang E-book</h3>
-        <button class="popup-close-btn" id="btnCloseToc" type="button">&times;</button>
-      </div>
-      <div class="toc-cards-grid">
-        <button class="toc-card-btn" type="button" data-jump="0">
-          <span class="toc-badge">BÌA SÁCH</span>
-          <span class="toc-name">Bìa chính: Từ Kim Vân Kiều truyện đến Truyện Kiều</span>
-        </button>
-        <button class="toc-card-btn" type="button" data-jump="1">
-          <span class="toc-badge">TRANG 1</span>
-          <span class="toc-name">01. Truyện Kiều – Tiếng lòng nhân đạo của Nguyễn Du</span>
-        </button>
-        <button class="toc-card-btn" type="button" data-jump="2">
-          <span class="toc-badge">TRANG 2</span>
-          <span class="toc-name">02. Nguyễn Du đã sáng tạo như thế nào? (Kế thừa &amp; Tái sinh)</span>
-        </button>
-        <button class="toc-card-btn" type="button" data-jump="3">
-          <span class="toc-badge">TRANG 3</span>
-          <span class="toc-name">03. Kim Vân Kiều truyện – Cốt truyện nguồn (Thanh Tâm Tài Nhân)</span>
-        </button>
-        <button class="toc-card-btn" type="button" data-jump="4">
-          <span class="toc-badge">TRANG 4</span>
-          <span class="toc-name">04. Bảng đối chiếu 5 phương diện &amp; Góc nhìn từ tuổi trẻ</span>
-        </button>
-        <button class="toc-card-btn" type="button" data-jump="5">
-          <span class="toc-badge">BÌA SAU</span>
-          <span class="toc-name">Bìa sau: Thông điệp văn hóa &amp; Lời bế mạc</span>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Toast hiển thị thông báo -->
-  <div id="actionToast">Đã cập nhật trang</div>
+  <div id="actionNotification">Thông báo</div>
 
   <!-- =====================================================================
-       JAVASCRIPT: KHỞI TẠO STPAGEFLIP & TƯƠNG TÁC ÂM THANH
+       JAVASCRIPT: TURN.JS INITIALIZATION & RESPONSIVE ENGINE
        ===================================================================== -->
   <script>
-    (function () {
+    $(document).ready(function () {
       'use strict';
 
-      let pageFlipInstance = null;
-      let soundEnabled = true;
-      let autoPlayTimer = null;
-      let audioCtx = null;
+      var soundActive = true;
+      var audioContext = null;
 
       /* ---------------------------------------------------------------------
-         1. TỔNG HỢP ÂM THANH TIẾNG GIẤY LẬT TỰ NHIÊN (WEB AUDIO API)
+         1. TỔNG HỢP ÂM THANH LẬT GIẤY TỰ NHIÊN (WEB AUDIO API)
          --------------------------------------------------------------------- */
-      function initAudioContext() {
-        if (!audioCtx) {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (AudioContext) audioCtx = new AudioContext();
-        }
-        if (audioCtx && audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-      }
-
-      function playPageTurnAudio() {
-        if (!soundEnabled) return;
+      function playFlipSound() {
+        if (!soundActive) return;
         try {
-          initAudioContext();
-          if (!audioCtx) return;
+          if (!audioContext) {
+            var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (AudioContextClass) audioContext = new AudioContextClass();
+          }
+          if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume();
+          }
+          if (!audioContext) return;
 
-          const bufferSize = audioCtx.sampleRate * 0.18;
-          const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-          const data = buffer.getChannelData(0);
-
-          for (let i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioCtx.sampleRate * 0.04));
+          var bufferSize = audioContext.sampleRate * 0.16;
+          var buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+          var data = buffer.getChannelData(0);
+          for (var i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioContext.sampleRate * 0.035));
           }
 
-          const noise = audioCtx.createBufferSource();
+          var noise = audioContext.createBufferSource();
           noise.buffer = buffer;
 
-          const filter = audioCtx.createBiquadFilter();
+          var filter = audioContext.createBiquadFilter();
           filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(1100, audioCtx.currentTime);
-          filter.frequency.exponentialRampToValueAtTime(320, audioCtx.currentTime + 0.18);
+          filter.frequency.setValueAtTime(1200, audioContext.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(360, audioContext.currentTime + 0.16);
 
-          const gain = audioCtx.createGain();
-          gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.18);
+          var gain = audioContext.createGain();
+          gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.16);
 
           noise.connect(filter);
           filter.connect(gain);
-          gain.connect(audioCtx.destination);
+          gain.connect(audioContext.destination);
 
           noise.start();
-        } catch (e) {
-          /* Fallback im lặng nếu thiết bị không hỗ trợ audio */
-        }
+        } catch (e) {}
       }
 
       /* ---------------------------------------------------------------------
-         2. TÍNH TOÁN KÍCH THƯỚC TRANG ĐỘNG CHO PC & ĐIỆN THOẠI
+         2. TÍNH TOÁN KÍCH THƯỚC TRANG ĐỘNG CHO PC & ĐIỆN THOẠI (KHÔNG NHỎ XÍU)
          --------------------------------------------------------------------- */
-      function getOptimizedDimensions() {
-        const isMobile = window.innerWidth < 768;
-        const availableWidth = window.innerWidth;
-        const availableHeight = window.innerHeight - 130; // Chừa chỗ cho header và footer
+      function calculateDimensions() {
+        var winW = $(window).width();
+        var winH = $(window).height();
+        var isMobile = winW < 768;
+
+        var availableH = winH - 105; // Chừa chỗ header + footer
+        var bookW, bookH;
 
         if (isMobile) {
-          // Điện thoại: Chế độ 1 trang (Single page)
-          const targetW = Math.min(availableWidth * 0.94, 520);
-          const targetH = Math.min(availableHeight * 0.96, targetW * 1.48);
-          return { width: Math.round(targetH / 1.45), height: Math.round(targetH) };
+          // Điện thoại: Hiển thị 1 trang to, rõ ràng, chiếm 94% chiều rộng
+          bookW = Math.min(winW * 0.94, 460);
+          bookH = Math.min(availableH, bookW * 1.48);
+          bookW = Math.round(bookH / 1.48);
         } else {
-          // PC / Laptop / Tablet ngang: Chế độ 2 trang (Spread 2 pages)
-          const maxHalfW = (availableWidth * 0.92) / 2;
-          const targetH = Math.min(availableHeight * 0.92, 820);
-          const targetW = Math.min(maxHalfW, targetH * 0.72);
-          return { width: Math.round(targetW), height: Math.round(targetW / 0.72) };
+          // Máy tính / Laptop: Hiển thị 2 trang mở rộng, chiếm trọn 88-92% tầm nhìn
+          var targetH = Math.min(availableH, 780);
+          var targetW = Math.min(winW * 0.92, targetH * 1.44);
+          bookH = Math.round(targetW / 1.44);
+          bookW = Math.round(targetW);
         }
+
+        return { width: bookW, height: bookH, isMobile: isMobile };
       }
+
+      var dim = calculateDimensions();
 
       /* ---------------------------------------------------------------------
-         3. KHỞI TẠO THƯ VIỆN STPAGEFLIP
+         3. KHỞI TẠO TURN.JS FLIPBOOK & CĂN GIỮA ĐỘNG
          --------------------------------------------------------------------- */
-      function initFlipbook() {
-        const bookEl = document.getElementById('book');
-        const dim = getOptimizedDimensions();
+      var $flipbook = $('#flipbook');
 
-        pageFlipInstance = new St.PageFlip(bookEl, {
-          width: dim.width,
-          height: dim.height,
-          size: 'stretch',
-          minWidth: 280,
-          maxWidth: 950,
-          minHeight: 400,
-          maxHeight: 1350,
-          maxShadowOpacity: 0.55,
-          showCover: true,
-          mobileScrollSupport: false,
-          flippingTime: 950,
-          usePortrait: true,
-          startZIndex: 10,
-          autoSize: true,
-          drawShadow: true,
-          showPageCorners: true
-        });
+      $flipbook.turn({
+        width: dim.width,
+        height: dim.height,
+        elevation: 50,
+        gradients: true,
+        autoCenter: true,
+        duration: 800,
+        acceleration: true,
+        display: dim.isMobile ? 'single' : 'double'
+      });
 
-        // Tải các thẻ div.page vào flipbook
-        pageFlipInstance.loadFromHTML(document.querySelectorAll('.page'));
-
-        // Sự kiện khi lật trang
-        pageFlipInstance.on('flip', function (e) {
-          playPageTurnAudio();
-          updateNavState(e.data);
-        });
-
-        pageFlipInstance.on('changeState', function (e) {
-          if (e.data === 'flipping') {
-            playPageTurnAudio();
-          }
-        });
-
-        updateNavState(0);
+      // Căn giữa mượt mà: Bìa trước (page 1) căn giữa, Bìa sau căn giữa, Trang trong mở đôi cân đối
+      function updateBookPosition(page) {
+        var total = $flipbook.turn('pages');
+        if (dim.isMobile) {
+          $flipbook.css('transform', 'translateX(0)');
+          return;
+        }
+        if (page === 1) {
+          $flipbook.css('transform', 'translateX(-25%)');
+        } else if (page === total) {
+          $flipbook.css('transform', 'translateX(25%)');
+        } else {
+          $flipbook.css('transform', 'translateX(0)');
+        }
       }
 
-      /* Cập nhật nhãn trang và trạng thái nút */
-      function updateNavState(pageIndex) {
-        const indicator = document.getElementById('pageIndicator');
-        const prevBtn = document.getElementById('btnPrev');
-        const nextBtn = document.getElementById('btnNext');
-        const total = pageFlipInstance ? pageFlipInstance.getPageCount() : 6;
+      // Cập nhật trạng thái hiển thị
+      function updateIndicators(page) {
+        var total = $flipbook.turn('pages');
+        var text = 'Trang ' + page + ' / ' + total;
+        if (page === 1) text = 'Bìa trước';
+        else if (page === total) text = 'Bìa sau';
+        else if (!dim.isMobile && page > 1 && page < total) {
+          // Hiển thị dạng cặp trang trên máy tính
+          var leftPage = page % 2 === 0 ? page : page - 1;
+          var rightPage = leftPage + 1;
+          text = 'Trang ' + (leftPage - 1) + ' – ' + (rightPage - 1) + ' / 5';
+        }
 
-        let label = 'Trang ' + pageIndex + ' / 5';
-        if (pageIndex === 0) label = 'Bìa trước';
-        else if (pageIndex >= total - 1) label = 'Bìa sau';
+        $('#indicatorText').text(text);
+        $('#btnPrevPage').prop('disabled', page <= 1);
+        $('#btnNextPage').prop('disabled', page >= total);
+        $('#stagePrev').prop('disabled', page <= 1);
+        $('#stageNext').prop('disabled', page >= total);
 
-        indicator.textContent = label;
-        prevBtn.disabled = pageIndex <= 0;
-        nextBtn.disabled = pageIndex >= total - 1;
+        $('.tab-jump-btn').removeClass('active');
+        $('.tab-jump-btn[data-page="' + page + '"]').addClass('active');
 
-        // Cập nhật tab mục lục dưới
-        document.querySelectorAll('.ch-pill').forEach(function (pill) {
-          const p = Number(pill.dataset.page);
-          pill.classList.toggle('active', p === pageIndex);
-        });
+        updateBookPosition(page);
       }
+
+      $flipbook.bind('turning', function (event, page, view) {
+        playFlipSound();
+        updateIndicators(page);
+      });
+
+      // Áp dụng vị trí căn giữa ban đầu
+      updateIndicators(1);
 
       /* ---------------------------------------------------------------------
-         4. GẮN SỰ KIỆN CÁC NÚT ĐIỀU HƯỚNG
+         4. SỰ KIỆN NÚT TIẾP / LÙI & TAB NHẢY TRANG
          --------------------------------------------------------------------- */
-      document.getElementById('btnPrev').addEventListener('click', function () {
-        initAudioContext();
-        if (pageFlipInstance) pageFlipInstance.flipPrev();
+      $('#btnPrevPage, #stagePrev').on('click', function () {
+        $flipbook.turn('previous');
       });
 
-      document.getElementById('btnNext').addEventListener('click', function () {
-        initAudioContext();
-        if (pageFlipInstance) pageFlipInstance.flipNext();
+      $('#btnNextPage, #stageNext').on('click', function () {
+        $flipbook.turn('next');
       });
 
-      // Bấm tab ở thanh dưới để chuyển trang
-      document.querySelectorAll('.ch-pill').forEach(function (pill) {
-        pill.addEventListener('click', function () {
-          initAudioContext();
-          const target = Number(pill.dataset.page);
-          if (pageFlipInstance) pageFlipInstance.flip(target);
-        });
+      $('.tab-jump-btn').on('click', function () {
+        var targetPage = parseInt($(this).data('page'), 10);
+        $flipbook.turn('page', targetPage);
       });
 
-      // Phím mũi tên bàn phím
-      document.addEventListener('keydown', function (e) {
-        if (!pageFlipInstance) return;
-        if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
-          pageFlipInstance.flipNext();
-        } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
-          pageFlipInstance.flipPrev();
-        } else if (e.key === 'Home') {
-          pageFlipInstance.flip(0);
-        } else if (e.key === 'End') {
-          pageFlipInstance.flip(pageFlipInstance.getPageCount() - 1);
-        }
+      // Bấm phím mũi tên bàn phím
+      $(document).on('keydown', function (e) {
+        if (e.keyCode === 37) $flipbook.turn('previous'); // Mũi tên trái
+        if (e.keyCode === 39) $flipbook.turn('next');     // Mũi tên phải
       });
 
-      // Bật/tắt âm thanh
-      const btnAudio = document.getElementById('btnAudio');
-      btnAudio.addEventListener('click', function () {
-        soundEnabled = !soundEnabled;
-        btnAudio.classList.toggle('active', soundEnabled);
-        showToast(soundEnabled ? 'Đã bật âm thanh lật giấy' : 'Đã tắt âm thanh');
-        if (soundEnabled) playPageTurnAudio();
+      /* ---------------------------------------------------------------------
+         5. TỰ ĐỘNG THÍCH ỨNG KÍCH THƯỚC KHI CO DÃN MÀN HÌNH (RESIZE)
+         --------------------------------------------------------------------- */
+      var resizeTimer = null;
+      $(window).on('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+          var newDim = calculateDimensions();
+          dim = newDim;
+          $flipbook.turn('size', newDim.width, newDim.height);
+          $flipbook.turn('display', newDim.isMobile ? 'single' : 'double');
+          updateIndicators($flipbook.turn('page'));
+        }, 150);
       });
 
-      // Tự động lật sách (Slideshow)
-      const btnAutoPlay = document.getElementById('btnAutoPlay');
-      btnAutoPlay.addEventListener('click', function () {
-        if (autoPlayTimer) {
-          clearInterval(autoPlayTimer);
-          autoPlayTimer = null;
-          btnAutoPlay.classList.remove('active');
-          showToast('Đã dừng chế độ tự động lật');
-        } else {
-          btnAutoPlay.classList.add('active');
-          showToast('Đang bật tự động lật trang mỗi 5 giây');
-          autoPlayTimer = setInterval(function () {
-            if (!pageFlipInstance) return;
-            const current = pageFlipInstance.getCurrentPageIndex();
-            const total = pageFlipInstance.getPageCount();
-            if (current < total - 1) {
-              pageFlipInstance.flipNext();
-            } else {
-              pageFlipInstance.flip(0);
-            }
-          }, 5000);
-        }
+      /* ---------------------------------------------------------------------
+         6. CÁC NÚT CÔNG CỤ: ÂM THANH, TRÌNH CHIẾU, XUẤT IN PDF
+         --------------------------------------------------------------------- */
+      $('#btnAudioToggle').on('click', function () {
+        soundActive = !soundActive;
+        $(this).toggleClass('active', soundActive);
+        notify(soundActive ? 'Đã bật âm thanh lật giấy' : 'Đã tắt âm thanh');
+        if (soundActive) playFlipSound();
       });
 
-      // Toàn màn hình
-      const btnFullscreen = document.getElementById('btnFullscreen');
-      btnFullscreen.addEventListener('click', function () {
+      $('#btnFullscreenToggle').on('click', function () {
         if (!document.fullscreenElement) {
           document.documentElement.requestFullscreen().catch(function () {});
-          btnFullscreen.classList.add('active');
-          showToast('Chế độ trình chiếu toàn màn hình (Bấm ESC để thoát)');
+          $(this).addClass('active');
+          notify('Chế độ toàn màn hình (Bấm ESC để thoát)');
         } else {
           document.exitFullscreen().catch(function () {});
-          btnFullscreen.classList.remove('active');
+          $(this).removeClass('active');
         }
       });
 
-      // In / Xuất PDF chuẩn khổ A4
-      document.getElementById('btnPrintPdf').addEventListener('click', function () {
-        showToast('Đang mở hộp thoại in / xuất PDF 5 trang chuẩn A4...');
+      $('#btnPrintA4').on('click', function () {
+        notify('Đang mở hộp thoại in / xuất PDF 5 trang...');
         setTimeout(function () { window.print(); }, 400);
       });
 
-      // Modal Mục lục nhanh
-      const tocModal = document.getElementById('tocModal');
-      document.getElementById('btnToc').addEventListener('click', function () {
-        tocModal.classList.add('open');
-      });
-      document.getElementById('btnCloseToc').addEventListener('click', function () {
-        tocModal.classList.remove('open');
-      });
-      tocModal.addEventListener('click', function (e) {
-        if (e.target === tocModal) tocModal.classList.remove('open');
-      });
-      document.querySelectorAll('[data-jump]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          initAudioContext();
-          const p = Number(btn.dataset.jump);
-          if (pageFlipInstance) pageFlipInstance.flip(p);
-          tocModal.classList.remove('open');
-        });
-      });
-
-      // Toast thông báo
-      let toastTimer = null;
-      function showToast(msg) {
-        const toast = document.getElementById('actionToast');
-        toast.textContent = msg;
-        toast.classList.add('active');
-        if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () {
-          toast.classList.remove('active');
-        }, 2200);
+      function notify(msg) {
+        var $toast = $('#actionNotification');
+        $toast.text(msg).addClass('visible');
+        setTimeout(function () { $toast.removeClass('visible'); }, 2000);
       }
 
-      /* ---------------------------------------------------------------------
-         5. HIỆU ỨNG CANVAS: BỤI VÀNG & CÁNH HOA ĐÀO BAY CHẬM
-         --------------------------------------------------------------------- */
-      const canvas = document.getElementById('ambientCanvas');
-      const ctx = canvas.getContext('2d');
-      let particles = [];
-
-      function resizeAmbient() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-
-      function initParticles() {
-        particles = [];
-        const count = window.innerWidth < 640 ? 16 : 30;
-        for (let i = 0; i < count; i++) {
-          const isPetal = i % 4 === 0;
-          particles.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            r: isPetal ? 3 + Math.random() * 2.5 : 1 + Math.random() * 1.5,
-            vx: (Math.random() - 0.35) * 0.35,
-            vy: isPetal ? 0.3 + Math.random() * 0.35 : -0.15 - Math.random() * 0.2,
-            rot: Math.random() * Math.PI * 2,
-            vrot: (Math.random() - 0.5) * 0.015,
-            alpha: 0.2 + Math.random() * 0.45,
-            isPetal: isPetal
-          });
-        }
-      }
-
-      function renderAmbient() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          p.x += p.vx + Math.sin(p.y * 0.008) * 0.2;
-          p.y += p.vy;
-          p.rot += p.vrot;
-
-          if (p.y > canvas.height + 15) { p.y = -10; p.x = Math.random() * canvas.width; }
-          if (p.y < -15) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
-          if (p.x > canvas.width + 15) { p.x = -10; }
-          if (p.x < -15) { p.x = canvas.width + 10; }
-
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate(p.rot);
-          ctx.globalAlpha = p.alpha;
-          if (p.isPetal) {
-            ctx.fillStyle = '#e8a5aa';
-            ctx.beginPath();
-            ctx.ellipse(0, 0, p.r * 1.4, p.r * 0.75, 0, 0, Math.PI * 2);
-            ctx.fill();
-          } else {
-            ctx.fillStyle = '#e8c57a';
-            ctx.beginPath();
-            ctx.arc(0, 0, p.r, 0, Math.PI * 2);
-            ctx.fill();
-          }
-          ctx.restore();
-        }
-        requestAnimationFrame(renderAmbient);
-      }
-
-      // Khởi chạy khi load trang
-      window.addEventListener('resize', function () {
-        resizeAmbient();
-      });
-
-      window.addEventListener('DOMContentLoaded', function () {
-        resizeAmbient();
-        initParticles();
-        renderAmbient();
-        initFlipbook();
-      });
-
-    })();
+    });
   </script>
 </body>
 </html>
