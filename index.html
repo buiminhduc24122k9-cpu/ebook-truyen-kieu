@@ -8,40 +8,49 @@
   <!-- Google Fonts: Chuẩn mực xuất bản văn học & Typo tiếng Việt hiện đại cực kỳ dễ đọc -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Playfair+Display:ital,wght@0,600;0,700;0,800;0,900;1,600;1,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600&family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet" />
 
   <!-- jQuery & Turn.js: Thư viện lật sách 3D kinh điển, mượt mà -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/3/turn.min.js"></script>
 
-  <style>
+    <style>
     /* =========================================================================
-       1. BẢNG MÀU HOÀNG GIA & THIẾT KẾ PHONG CÁCH GEMINI STORYBOOK ("BASIC MÀ SANG TRỌNG")
+       1. BẢNG MÀU HOÀNG GIA & NỀN HỔ PHÁCH SƠN MÀI ĐỒNG SƠN (TƯƠNG PHẢN CỰC MẠNH)
        ========================================================================= */
     :root {
-      --bg-ambient: #f5f0e6;
-      --paper-cream: #faf5eb;
-      --paper-aged: #f4ecda;
-      --paper-card: #fffdfa;
+      /* Màu nền bàn đọc trang web: Hổ phách hoàng gia / Sơn mài ấm áp chuẩn mẫu */
+      --bg-amber-light: #e8a652;
+      --bg-amber-mid: #d48a33;
+      --bg-amber-dark: #b86b1a;
 
-      --ink-primary: #1a100b;
-      --ink-body: #22150f;
-      --ink-muted: #524035;
-      --ink-light: #735f52;
+      /* Màu trang sách: Giấy mỹ thuật trắng ngà tinh khôi, sáng bừng rực rỡ */
+      --paper-cream: #ffffff;
+      --paper-aged: #fcfaf6;
+      --paper-card: #ffffff;
 
-      --crimson-royal: #8d1c20;
-      --crimson-deep: #681115;
-      --crimson-soft: rgba(141, 28, 32, 0.08);
+      /* Màu mực: Đen mực tàu đậm đặc, nét chữ đĩnh đạc, rõ nét, tuyệt đối không mờ nhòe */
+      --ink-primary: #0a0604;
+      --ink-body: #160e09;
+      --ink-muted: #332014;
+      --ink-light: #523927;
 
-      --gold-royal: #b68d40;
-      --gold-light: #d8b772;
-      --gold-soft: rgba(182, 141, 64, 0.18);
+      /* Màu đỏ điều & son chu sa: Sang trọng, quyền quý */
+      --crimson-royal: #8a1418;
+      --crimson-deep: #630c10;
+      --crimson-soft: rgba(138, 20, 24, 0.08);
 
-      --jade-deep: #1f424b;
-      --jade-soft: rgba(31, 66, 75, 0.08);
+      /* Nhũ vàng hoàng gia */
+      --gold-royal: #b3852b;
+      --gold-light: #d4a74f;
+      --gold-soft: rgba(179, 133, 43, 0.22);
 
-      --font-title: 'Playfair Display', Georgia, serif;
-      --font-body: 'Be Vietnam Pro', -apple-system, sans-serif; /* Font chuẩn tiếng Việt siêu nét */
+      --jade-deep: #163a43;
+      --jade-soft: rgba(22, 58, 67, 0.08);
+
+      /* Font chữ có chân khỏe khoắn (Lora) cho tiêu đề & Font không chân chuẩn mực (Be Vietnam Pro) nét dày rõ */
+      --font-title: 'Lora', Georgia, serif;
+      --font-body: 'Be Vietnam Pro', -apple-system, sans-serif;
       --font-ui: 'Be Vietnam Pro', -apple-system, sans-serif;
       --font-script: 'Alex Brush', cursive;
     }
@@ -56,7 +65,7 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      background-color: var(--bg-ambient);
+      background-color: #d48a33;
       font-family: var(--font-body);
       color: var(--ink-body);
       -webkit-font-smoothing: antialiased;
@@ -64,8 +73,36 @@
       user-select: none;
     }
 
+    /* Ngăn chặn hoàn toàn hiện tượng kéo ảnh ghost, nhấp/lướt vào ảnh là lật trang 100% mượt mà */
+    img {
+      -webkit-user-drag: none !important;
+      -khtml-user-drag: none !important;
+      -moz-user-drag: none !important;
+      -o-user-drag: none !important;
+      user-drag: none !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+      pointer-events: none !important;
+    }
+
+    /* Tối ưu phần cứng GPU 60 FPS mượt mà cho hiệu ứng lật trang 3D Turn.js */
+    #flipbook,
+    .turn-page-wrapper,
+    .page,
+    .page-layout-frame,
+    .cover-outer-frame,
+    .back-cover-outer {
+      -webkit-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      -webkit-perspective: 1600px;
+      perspective: 1600px;
+      will-change: transform;
+    }
+
     /* =========================================================================
-       2. PHÔNG NỀN BÀN ĐỌC (SÁNG SỦA, TINH TẾ, CÓ CHIỀU SÂU BÀN ĐỌC)
+       2. PHÔNG NỀN BÀN ĐỌC HỔ PHÁCH SƠN MÀI ĐÔNG SƠN (GIỐNG HỆT ẢNH MẪU EBOOK365.VN)
        ========================================================================= */
     .storybook-app {
       position: relative;
@@ -76,23 +113,22 @@
       justify-content: space-between;
       align-items: center;
       background:
-        radial-gradient(ellipse at 50% 48%, rgba(255, 253, 248, 0.95) 0%, rgba(246, 238, 224, 0.9) 50%, rgba(228, 215, 194, 0.95) 100%),
-        repeating-linear-gradient(90deg, rgba(180, 140, 90, 0.03) 0px, rgba(180, 140, 90, 0.03) 1px, transparent 1px, transparent 40px),
-        #f4ece0;
+        radial-gradient(ellipse at 50% 50%, #f2b260 0%, #dc9036 50%, #b86815 100%),
+        #d88a2e;
       overflow: hidden;
     }
 
-    /* Họa tiết Trống đồng Đông Sơn in chìm trang nhã */
+    /* Họa tiết Trống đồng Đông Sơn rõ nét, trang trọng như ảnh mẫu */
     .cultural-watermark {
       position: absolute;
       inset: 0;
       pointer-events: none;
       z-index: 1;
-      opacity: 0.04;
+      opacity: 0.16;
       background-position: center center;
       background-repeat: no-repeat;
-      background-size: min(85vw, 85vh);
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%238d1c20' stroke-width='4'%3E%3Ccircle cx='400' cy='400' r='380' stroke-width='8'/%3E%3Ccircle cx='400' cy='400' r='350' stroke-dasharray='12,6'/%3E%3Ccircle cx='400' cy='400' r='300' stroke-width='6'/%3E%3Ccircle cx='400' cy='400' r='240' stroke-dasharray='8,6'/%3E%3Ccircle cx='400' cy='400' r='180' stroke-width='5'/%3E%3Ccircle cx='400' cy='400' r='100'/%3E%3Ccircle cx='400' cy='400' r='40' fill='%238d1c20' fill-opacity='0.25'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: min(90vw, 90vh);
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23662a04' stroke-width='4'%3E%3Ccircle cx='400' cy='400' r='380' stroke-width='8'/%3E%3Ccircle cx='400' cy='400' r='350' stroke-dasharray='12,6'/%3E%3Ccircle cx='400' cy='400' r='300' stroke-width='6'/%3E%3Ccircle cx='400' cy='400' r='240' stroke-dasharray='8,6'/%3E%3Ccircle cx='400' cy='400' r='180' stroke-width='5'/%3E%3Ccircle cx='400' cy='400' r='100'/%3E%3Ccircle cx='400' cy='400' r='40' fill='%23662a04' fill-opacity='0.3'/%3E%3C/g%3E%3C/svg%3E");
     }
 
     /* =========================================================================
@@ -109,12 +145,12 @@
       justify-content: space-between;
       gap: 12px;
       padding: 0 16px;
-      background: rgba(255, 253, 248, 0.94);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(182, 141, 64, 0.4);
+      border: 1px solid rgba(179, 133, 43, 0.45);
       border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(60, 40, 20, 0.06);
+      box-shadow: 0 6px 20px rgba(70, 35, 10, 0.15);
       font-family: var(--font-ui);
     }
 
@@ -166,7 +202,7 @@
       width: 32px;
       height: 32px;
       border-radius: 8px;
-      border: 1px solid rgba(182, 141, 64, 0.4);
+      border: 1px solid rgba(179, 133, 43, 0.4);
       background: #ffffff;
       color: var(--crimson-deep);
       display: grid;
@@ -189,10 +225,10 @@
 
     .page-indicator-badge {
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--crimson-deep);
-      background: rgba(182, 141, 64, 0.12);
-      border: 1px solid rgba(182, 141, 64, 0.35);
+      background: rgba(179, 133, 43, 0.14);
+      border: 1px solid rgba(179, 133, 43, 0.4);
       padding: 4px 12px;
       border-radius: 99px;
       white-space: nowrap;
@@ -210,37 +246,37 @@
       gap: 5px;
       padding: 6px 12px;
       border-radius: 8px;
-      border: 1px solid rgba(182, 141, 64, 0.4);
+      border: 1px solid rgba(179, 133, 43, 0.4);
       background: #ffffff;
       color: var(--ink-primary);
       font-family: var(--font-ui);
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       white-space: nowrap;
     }
 
     .btn-action:hover {
-      background: rgba(182, 141, 64, 0.15);
+      background: rgba(179, 133, 43, 0.15);
       border-color: var(--gold-royal);
       color: var(--crimson-deep);
     }
 
     .btn-action.btn-primary {
-      background: linear-gradient(135deg, #8d1c20, #6c1216);
+      background: linear-gradient(135deg, #8a1418, #630c10);
       border-color: var(--gold-royal);
       color: #ffffff;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .btn-action.btn-primary:hover {
       background: linear-gradient(135deg, #a42327, #80161a);
-      box-shadow: 0 4px 12px rgba(141, 28, 32, 0.3);
+      box-shadow: 0 4px 12px rgba(138, 20, 24, 0.35);
     }
 
     .btn-action.active {
-      background: rgba(182, 141, 64, 0.2);
+      background: rgba(179, 133, 43, 0.2);
       color: var(--crimson-royal);
       border-color: var(--gold-royal);
     }
@@ -252,7 +288,7 @@
     }
 
     /* =========================================================================
-       4. SÂN KHẤU TRÌNH DIỄN SÁCH LẬT 3D (TURN.JS FLIPBOOK STAGE)
+       4. SÂN KHẤU TRÌNH DIỄN SÁCH LẬT 3D (TURN.JS STAGE)
        ========================================================================= */
     .storybook-stage {
       position: relative;
@@ -267,18 +303,17 @@
       overflow: visible;
     }
 
-    /* Nút mũi tên lật sách nổi ở 2 bên mép màn hình (phong cách ebook365.vn) */
     .stage-nav-arrow {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 46px;
-      height: 46px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      background: rgba(255, 253, 248, 0.92);
-      border: 1.2px solid rgba(182, 141, 64, 0.45);
+      background: rgba(255, 255, 255, 0.96);
+      border: 1.5px solid rgba(179, 133, 43, 0.55);
       color: var(--crimson-deep);
-      box-shadow: 0 4px 16px rgba(50, 30, 15, 0.14);
+      box-shadow: 0 6px 20px rgba(60, 30, 10, 0.25);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -293,7 +328,7 @@
       color: #ffffff;
       border-color: var(--gold-royal);
       transform: translateY(-50%) scale(1.1);
-      box-shadow: 0 6px 20px rgba(141, 28, 32, 0.35);
+      box-shadow: 0 8px 24px rgba(138, 20, 24, 0.4);
     }
 
     .stage-nav-arrow.stage-nav-prev {
@@ -315,7 +350,6 @@
       height: 22px;
     }
 
-    /* Thùng chứa Flipbook có phản hồi 3D vật lý theo chuột */
     .book-wrapper {
       position: relative;
       display: flex;
@@ -328,31 +362,30 @@
     #flipbook {
       position: relative;
       background: transparent !important;
-      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-      will-change: transform;
+      transform-style: preserve-3d;
+      cursor: pointer;
     }
 
     .turn-page-wrapper {
       background: transparent !important;
     }
 
-    /* Các trang sách độc lập */
+    /* Các trang sách độc lập - Giấy trắng ngà cao cấp, đổ bóng 3D chân thực */
     .page {
       background-color: var(--paper-cream);
-      overflow: hidden !important; /* TUYỆT ĐỐI KHÔNG CÓ THANH CUỘN */
+      overflow: hidden !important;
       position: relative;
       border-radius: 4px;
     }
 
     .page.odd {
-      box-shadow: 4px 10px 30px rgba(40, 20, 10, 0.15), inset 0 0 35px rgba(180, 140, 90, 0.1);
+      box-shadow: 10px 18px 50px rgba(55, 25, 5, 0.45), inset 0 0 45px rgba(210, 160, 90, 0.08);
     }
 
     .page.even {
-      box-shadow: -4px 10px 30px rgba(40, 20, 10, 0.15), inset 0 0 35px rgba(180, 140, 90, 0.1);
+      box-shadow: -10px 18px 50px rgba(55, 25, 5, 0.45), inset 0 0 45px rgba(210, 160, 90, 0.08);
     }
 
-    /* Độ dày tập giấy ở mép ngoài */
     .page.odd::after {
       content: "";
       position: absolute;
@@ -360,7 +393,7 @@
       right: 0;
       bottom: 0;
       width: 8px;
-      background: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.03) 60%, rgba(182, 141, 64, 0.15) 100%);
+      background: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.03) 60%, rgba(179, 133, 43, 0.18) 100%);
       pointer-events: none;
     }
 
@@ -371,18 +404,18 @@
       left: 0;
       bottom: 0;
       width: 8px;
-      background: linear-gradient(to left, transparent 0%, rgba(0,0,0,0.03) 60%, rgba(182, 141, 64, 0.15) 100%);
+      background: linear-gradient(to left, transparent 0%, rgba(0,0,0,0.03) 60%, rgba(179, 133, 43, 0.18) 100%);
       pointer-events: none;
     }
 
-    /* Chiều sâu gáy sách ở giữa (Spine shadow) */
+    /* Chiều sâu rãnh gáy sách ở giữa (Spine shadow tự nhiên) */
     .page.even .spine-gradient {
       position: absolute;
       top: 0;
       right: 0;
       bottom: 0;
-      width: 28px;
-      background: linear-gradient(to right, transparent 0%, rgba(30, 15, 5, 0.05) 50%, rgba(30, 15, 5, 0.22) 100%);
+      width: 30px;
+      background: linear-gradient(to right, transparent 0%, rgba(30, 15, 5, 0.04) 40%, rgba(30, 15, 5, 0.25) 100%);
       pointer-events: none;
       z-index: 20;
     }
@@ -392,8 +425,8 @@
       top: 0;
       left: 0;
       bottom: 0;
-      width: 28px;
-      background: linear-gradient(to left, transparent 0%, rgba(30, 15, 5, 0.05) 50%, rgba(30, 15, 5, 0.22) 100%);
+      width: 30px;
+      background: linear-gradient(to left, transparent 0%, rgba(30, 15, 5, 0.04) 40%, rgba(30, 15, 5, 0.25) 100%);
       pointer-events: none;
       z-index: 20;
     }
@@ -402,19 +435,17 @@
     .page-layout-frame {
       position: absolute;
       inset: 10px;
-      border: 1.5px solid rgba(182, 141, 64, 0.55);
+      border: 1.5px solid rgba(179, 133, 43, 0.65);
       border-radius: 4px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 12px 16px 10px 16px;
-      background:
-        radial-gradient(circle at 50% 20%, #fffefb 0%, var(--paper-cream) 80%, var(--paper-aged) 100%);
-      box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5);
+      background: #ffffff;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.9), inset 0 0 25px rgba(240, 225, 200, 0.25);
       overflow: hidden !important;
     }
 
-    /* Hoa văn triện 4 góc trang nhã */
     .corner-trien {
       position: absolute;
       width: 20px;
@@ -429,15 +460,14 @@
     .corner-trien.bl { bottom: 2px; left: 2px; transform: scaleY(-1); }
     .corner-trien.br { bottom: 2px; right: 2px; transform: scale(-1, -1); }
 
-    /* Góc gợi ý lật sách (Page Curl Hint) */
     .page-curl-indicator {
       position: absolute;
       bottom: 0;
       right: 0;
       width: 32px;
       height: 32px;
-      background: linear-gradient(135deg, transparent 50%, rgba(182, 141, 64, 0.25) 50%, #f4e8cf 100%);
-      box-shadow: -2px -2px 6px rgba(0, 0, 0, 0.08);
+      background: linear-gradient(135deg, transparent 50%, rgba(179, 133, 43, 0.3) 50%, #f4e8cf 100%);
+      box-shadow: -2px -2px 6px rgba(0, 0, 0, 0.1);
       border-top-left-radius: 4px;
       pointer-events: none;
       z-index: 25;
@@ -445,7 +475,7 @@
     }
 
     /* =========================================================================
-       5. THIẾT KẾ TRANG BÌA CHÍNH (COVER PAGE - ĐẲNG CẤP XUẤT BẢN)
+       5. THIẾT KẾ TRANG BÌA CHÍNH (COVER PAGE)
        ========================================================================= */
     .cover-outer-frame {
       position: absolute;
@@ -453,17 +483,17 @@
       border: 2px solid var(--gold-royal);
       border-radius: 6px;
       padding: 3px;
-      background: radial-gradient(circle at 50% 38%, #fffefb 0%, #f7ecd5 70%, #ebd8b6 100%);
+      background: radial-gradient(circle at 50% 38%, #ffffff 0%, #faf1de 70%, #ebd7b3 100%);
       box-shadow:
         inset 0 0 35px rgba(110, 75, 35, 0.15),
-        0 4px 16px rgba(0, 0, 0, 0.08);
+        0 4px 16px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
     }
 
     .cover-inner-body {
       flex: 1;
-      border: 1px solid rgba(141, 28, 32, 0.45);
+      border: 1px solid rgba(138, 20, 24, 0.45);
       border-radius: 4px;
       padding: clamp(10px, 1.8vh, 16px) clamp(10px, 2vw, 18px);
       display: flex;
@@ -478,7 +508,7 @@
     .cover-top-meta {
       font-family: var(--font-ui);
       font-size: clamp(9.5px, 1.3vh, 11px);
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 1.4px;
       text-transform: uppercase;
       color: var(--crimson-deep);
@@ -500,24 +530,23 @@
     .cover-heading-bold {
       font-family: var(--font-title);
       font-size: clamp(21px, 3.4vh, 28px);
-      font-weight: 900;
+      font-weight: 800;
       line-height: 1.2;
-      color: #24130b;
+      color: #1a0e08;
       letter-spacing: 1px;
       text-transform: uppercase;
     }
 
     .cover-subtitle-desc {
       font-family: var(--font-body);
-      font-size: clamp(11px, 1.55vh, 12.5px);
-      line-height: 1.4;
+      font-size: clamp(11.5px, 1.6vh, 13px);
+      line-height: 1.45;
       color: var(--ink-muted);
       max-width: 380px;
       margin: 4px auto 0 auto;
-      font-weight: 500;
+      font-weight: 600;
     }
 
-    /* Họa phẩm bìa Thúy Kiều ôm đàn tỳ bà trọn vẹn 100% hình người và đàn */
     .cover-art-box {
       width: clamp(140px, 48%, 220px);
       max-height: clamp(130px, 28vh, 180px);
@@ -535,7 +564,7 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
-      background: #fffdf8;
+      background: #ffffff;
       border-radius: 5px;
       display: block;
     }
@@ -548,7 +577,7 @@
     .cover-student-text {
       font-family: var(--font-ui);
       font-size: clamp(10px, 1.35vh, 11px);
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: 1px;
       color: var(--crimson-royal);
       text-transform: uppercase;
@@ -556,10 +585,10 @@
 
     .cover-sub-text {
       font-family: var(--font-ui);
-      font-size: clamp(9px, 1.25vh, 10px);
+      font-size: clamp(9.5px, 1.3vh, 10.5px);
       color: var(--ink-muted);
       margin-top: 2px;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .cover-seal-pill {
@@ -568,16 +597,16 @@
       gap: 6px;
       margin-top: 4px;
       padding: 2px 8px;
-      border: 1px dashed rgba(141, 28, 32, 0.45);
+      border: 1px dashed rgba(138, 20, 24, 0.45);
       border-radius: 5px;
-      background: rgba(255, 255, 255, 0.5);
+      background: rgba(255, 255, 255, 0.7);
     }
 
     .vermilion-seal-text {
       border: 1.2px solid var(--crimson-royal);
       color: var(--crimson-royal);
       font-family: var(--font-ui);
-      font-size: 9px;
+      font-size: 9.5px;
       font-weight: 800;
       padding: 1px 4px;
       border-radius: 2px;
@@ -586,13 +615,13 @@
 
     .cover-seal-label {
       font-family: var(--font-ui);
-      font-size: 9px;
+      font-size: 9.5px;
       color: var(--ink-light);
-      font-weight: 500;
+      font-weight: 600;
     }
 
     /* =========================================================================
-       6. DÀN TRANG NỘI DUNG 4 TRANG CHÍNH (TYPO RÕ RÀNG, BỐ CỤC KHÔNG BỊ CẮT HÌNH)
+       6. DÀN TRANG NỘI DUNG 4 TRANG CHÍNH (TYPOGRAPHY NÉT ĐẬM, TƯƠNG PHẢN CAO)
        ========================================================================= */
     .page-header-bar {
       display: flex;
@@ -601,14 +630,14 @@
       gap: 10px;
       padding-bottom: 5px;
       margin-bottom: 6px;
-      border-bottom: 1.2px solid rgba(182, 141, 64, 0.55);
+      border-bottom: 1.4px solid rgba(179, 133, 43, 0.6);
       flex-shrink: 0;
     }
 
     .page-kicker {
       font-family: var(--font-ui);
-      font-size: clamp(8.5px, 1.2vh, 9.5px);
-      font-weight: 700;
+      font-size: clamp(9px, 1.25vh, 10px);
+      font-weight: 800;
       letter-spacing: 1.2px;
       text-transform: uppercase;
       color: var(--gold-royal);
@@ -618,10 +647,10 @@
 
     .page-main-title {
       font-family: var(--font-title);
-      font-size: clamp(14px, 2vh, 18px);
+      font-size: clamp(15px, 2.1vh, 18.5px);
       font-weight: 800;
       color: var(--crimson-royal);
-      line-height: 1.24;
+      line-height: 1.25;
       letter-spacing: 0.3px;
     }
 
@@ -632,12 +661,12 @@
       border-radius: 4px;
       color: var(--crimson-royal);
       font-family: var(--font-title);
-      font-size: 10px;
+      font-size: 10.5px;
       font-weight: 800;
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      background: rgba(141, 28, 32, 0.04);
+      background: rgba(138, 20, 24, 0.05);
     }
 
     .page-body-container {
@@ -650,11 +679,12 @@
       min-height: 0;
     }
 
-    /* Đoạn văn sắc nét, dễ đọc, tương phản cao */
+    /* Đoạn văn: Chữ đen tuyền, rõ nét, font-weight: 500 đĩnh đạc, không nhòe */
     .prose-paragraph {
       font-family: var(--font-body);
-      font-size: clamp(12px, 1.62vh, 13.5px);
-      line-height: 1.58;
+      font-size: clamp(12.5px, 1.7vh, 14px);
+      font-weight: 500;
+      line-height: 1.55;
       color: var(--ink-body);
       text-align: justify;
     }
@@ -663,23 +693,23 @@
       float: left;
       font-family: var(--font-title);
       font-size: clamp(34px, 4.4vh, 42px);
-      line-height: 0.8;
+      line-height: 0.82;
       font-weight: 800;
       color: var(--crimson-royal);
       padding: 2px 6px 1px 0;
     }
 
-    /* Bố cục 2 cột linh hoạt (Split-Hero) giúp ảnh dọc hiển thị trọn vẹn 100% */
+    /* Bố cục 2 cột song hành (Split-Hero) */
     .page-split-hero {
       display: flex;
       gap: 10px;
       align-items: stretch;
-      flex-shrink: 1;
+      flex-shrink: 0;
       min-height: 0;
     }
 
     .split-left {
-      flex: 1.1;
+      flex: 1.15;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -688,20 +718,20 @@
     }
 
     .split-right {
-      flex: 0.9;
+      flex: 0.85;
       display: flex;
       align-items: center;
       justify-content: center;
       min-width: 0;
     }
 
-    /* Khung tranh minh họa dọc không bị cắt đầu, cắt người */
+    /* Khung tranh minh họa dọc */
     .art-illustration-card {
       background: #ffffff;
       border: 1.2px solid var(--gold-royal);
       border-radius: 6px;
       padding: 3px;
-      box-shadow: 0 4px 12px rgba(45, 25, 12, 0.1);
+      box-shadow: 0 4px 12px rgba(45, 25, 12, 0.12);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -710,46 +740,47 @@
     }
 
     .art-illustration-card.vertical-card {
-      max-height: clamp(140px, 23vh, 175px);
+      max-height: clamp(130px, 21vh, 160px);
     }
 
     .art-illustration-card.vertical-card img {
       width: 100%;
       height: 100%;
-      max-height: clamp(115px, 19vh, 145px);
+      max-height: clamp(105px, 17vh, 132px);
       object-fit: contain;
-      background: #fffdf8;
+      background: #ffffff;
       border-radius: 4px;
       display: block;
     }
 
     .art-illustration-card.landscape-card {
-      max-height: clamp(120px, 19vh, 150px);
+      max-height: clamp(110px, 17vh, 135px);
       margin: 2px 0;
     }
 
     .art-illustration-card.landscape-card img {
       width: 100%;
-      max-height: clamp(95px, 15vh, 120px);
+      max-height: clamp(88px, 13.5vh, 108px);
       object-fit: cover;
-      object-position: center 25%; /* KHÔNG BỊ MẤT ĐẦU KIM TRỌNG! */
+      object-position: center 25%;
       border-radius: 4px;
       display: block;
     }
 
     .art-illustration-caption {
-      margin-top: 3px;
+      margin-top: 2px;
       font-family: var(--font-ui);
-      font-size: clamp(8.5px, 1.15vh, 10px);
+      font-size: clamp(8.5px, 1.15vh, 9.5px);
       font-style: italic;
       color: var(--ink-muted);
       text-align: center;
-      line-height: 1.3;
+      line-height: 1.25;
+      font-weight: 500;
     }
 
     /* Hộp tôn vinh giá trị */
     .callout-box {
-      background: rgba(182, 141, 64, 0.08);
+      background: rgba(250, 245, 235, 0.85);
       border-left: 3.5px solid var(--crimson-royal);
       border-radius: 0 5px 5px 0;
       padding: 6px 10px;
@@ -758,8 +789,8 @@
 
     .callout-title {
       font-family: var(--font-ui);
-      font-size: clamp(9px, 1.2vh, 10px);
-      font-weight: 700;
+      font-size: clamp(9.5px, 1.25vh, 10.5px);
+      font-weight: 800;
       letter-spacing: 0.8px;
       text-transform: uppercase;
       color: var(--crimson-royal);
@@ -777,11 +808,13 @@
     .character-pill-card {
       padding: 5px 8px;
       border-radius: 5px;
-      border: 1px solid rgba(182, 141, 64, 0.35);
-      background: rgba(255, 255, 255, 0.85);
-      font-size: clamp(10.5px, 1.4vh, 11.5px);
+      border: 1px solid rgba(179, 133, 43, 0.4);
+      background: #ffffff;
+      font-size: clamp(11px, 1.45vh, 12px);
+      font-weight: 500;
       line-height: 1.4;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      color: #140d09;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     }
 
     .character-pill-card .char-header {
@@ -793,18 +826,18 @@
 
     .character-pill-card strong {
       font-family: var(--font-ui);
-      font-weight: 700;
-      font-size: clamp(11.5px, 1.5vh, 12.5px);
+      font-weight: 800;
+      font-size: clamp(11.5px, 1.55vh, 12.5px);
       display: inline-block;
     }
 
-    .character-pill-card.kieu { border-left: 3px solid #e84393; background: rgba(232, 67, 147, 0.06); }
+    .character-pill-card.kieu { border-left: 3px solid #d63031; background: rgba(232, 67, 147, 0.06); }
     .character-pill-card.kieu strong { color: #d63031; }
 
     .character-pill-card.kim { border-left: 3px solid #0984e3; background: rgba(9, 132, 227, 0.06); }
     .character-pill-card.kim strong { color: #0984e3; }
 
-    .character-pill-card.tu { border-left: 3px solid #e17055; background: rgba(225, 112, 85, 0.07); }
+    .character-pill-card.tu { border-left: 3px solid #d35400; background: rgba(225, 112, 85, 0.07); }
     .character-pill-card.tu strong { color: #d35400; }
 
     .character-pill-card.hoan { border-left: 3px solid #6c5ce7; background: rgba(108, 92, 231, 0.06); }
@@ -814,12 +847,13 @@
     .quote-critic-mini {
       padding: 6px 10px;
       border-radius: 5px;
-      background: rgba(31, 66, 75, 0.06);
+      background: rgba(22, 58, 67, 0.07);
       border-left: 3px solid var(--jade-deep);
-      font-size: clamp(10.5px, 1.4vh, 11.5px);
+      font-size: clamp(11px, 1.45vh, 12px);
+      font-weight: 500;
       line-height: 1.46;
       font-style: italic;
-      color: #172b30;
+      color: #112226;
       flex-shrink: 0;
     }
 
@@ -828,7 +862,7 @@
       margin-top: 3px;
       font-style: normal;
       font-family: var(--font-ui);
-      font-size: clamp(8.5px, 1.1vh, 9.5px);
+      font-size: clamp(8.5px, 1.15vh, 9.5px);
       font-weight: 700;
       color: var(--jade-deep);
       text-align: right;
@@ -845,39 +879,41 @@
     .aspect-box-item {
       padding: 5px 7px;
       border-radius: 5px;
-      background: rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(182, 141, 64, 0.38);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      background: #ffffff;
+      border: 1px solid rgba(179, 133, 43, 0.4);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     }
 
     .aspect-box-title {
       font-family: var(--font-ui);
-      font-size: clamp(9.5px, 1.3vh, 10.5px);
-      font-weight: 700;
+      font-size: clamp(10px, 1.35vh, 11px);
+      font-weight: 800;
       color: var(--crimson-royal);
       margin-bottom: 2px;
     }
 
     .aspect-box-item p {
-      font-size: clamp(10px, 1.35vh, 11px);
+      font-size: clamp(10.5px, 1.4vh, 11.5px);
+      font-weight: 500;
       line-height: 1.4;
-      color: var(--ink-body);
+      color: #160e09;
       margin: 0;
     }
 
     /* Bảng giải phẫu vi văn bản đối sánh */
     .micro-comparison-box {
-      background: rgba(255, 253, 248, 0.95);
-      border: 1px solid rgba(141, 28, 32, 0.35);
+      background: #ffffff;
+      border: 1.2px solid rgba(138, 20, 24, 0.38);
       border-radius: 6px;
       padding: 6px 8px;
       flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     }
 
     .micro-header {
       font-family: var(--font-ui);
-      font-size: clamp(8.5px, 1.15vh, 9.5px);
-      font-weight: 700;
+      font-size: clamp(9px, 1.2vh, 10px);
+      font-weight: 800;
       letter-spacing: 0.8px;
       color: var(--crimson-royal);
       text-transform: uppercase;
@@ -894,24 +930,26 @@
     .micro-column {
       padding: 5px 7px;
       border-radius: 5px;
-      font-size: clamp(10px, 1.35vh, 11px);
+      font-size: clamp(10.5px, 1.4vh, 11.5px);
+      font-weight: 500;
       line-height: 1.44;
+      color: #140d09;
     }
 
     .micro-column.source-col {
-      background: rgba(31, 66, 75, 0.08);
-      border: 1px solid rgba(31, 66, 75, 0.22);
+      background: rgba(22, 58, 67, 0.07);
+      border: 1px solid rgba(22, 58, 67, 0.22);
     }
 
     .micro-column.target-col {
-      background: rgba(141, 28, 32, 0.07);
-      border: 1px solid rgba(141, 28, 32, 0.22);
+      background: rgba(138, 20, 24, 0.06);
+      border: 1px solid rgba(138, 20, 24, 0.22);
     }
 
     .micro-badge {
       font-family: var(--font-ui);
       font-size: 8.5px;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
       margin-bottom: 2px;
       display: block;
@@ -923,7 +961,8 @@
     .comparison-table-clean {
       width: 100%;
       border-collapse: collapse;
-      font-size: clamp(9.5px, 1.32vh, 11px);
+      font-size: clamp(10px, 1.35vh, 11.5px);
+      font-weight: 500;
       line-height: 1.4;
       border-radius: 5px;
       overflow: hidden;
@@ -932,29 +971,30 @@
     }
 
     .comparison-table-clean thead th {
-      background: linear-gradient(135deg, #8d1c20, #6c1216);
-      color: #fffdf8;
+      background: linear-gradient(135deg, #8a1418, #630c10);
+      color: #ffffff;
       font-family: var(--font-ui);
-      font-size: clamp(9px, 1.2vh, 10px);
-      font-weight: 700;
+      font-size: clamp(9.5px, 1.25vh, 10.5px);
+      font-weight: 800;
       padding: 4px 6px;
       text-align: left;
     }
 
     .comparison-table-clean tbody td {
       padding: 4px 6px;
-      border: 1px solid rgba(182, 141, 64, 0.3);
-      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(179, 133, 43, 0.35);
+      background: #ffffff;
+      color: #160e09;
       vertical-align: top;
     }
 
     .comparison-table-clean tbody tr:nth-child(even) td {
-      background: rgba(246, 238, 224, 0.45);
+      background: rgba(250, 245, 235, 0.5);
     }
 
     .comparison-table-clean td.aspect-col {
       font-family: var(--font-ui);
-      font-weight: 700;
+      font-weight: 800;
       color: var(--crimson-deep);
       width: 20%;
     }
@@ -962,8 +1002,8 @@
     /* Thuật ngữ 4 ô Góc Cảo Thơm */
     .glossary-header-label {
       font-family: var(--font-ui);
-      font-size: clamp(8.5px, 1.15vh, 9.5px);
-      font-weight: 700;
+      font-size: clamp(9px, 1.2vh, 10px);
+      font-weight: 800;
       letter-spacing: 0.8px;
       color: var(--crimson-royal);
       text-transform: uppercase;
@@ -979,16 +1019,18 @@
 
     .gloss-mini-card {
       padding: 5px 7px;
-      border: 1px solid rgba(182, 141, 64, 0.38);
+      border: 1px solid rgba(179, 133, 43, 0.4);
       border-radius: 5px;
-      background: rgba(255, 255, 255, 0.85);
-      font-size: clamp(9.5px, 1.3vh, 10.5px);
+      background: #ffffff;
+      font-size: clamp(10px, 1.35vh, 11px);
+      font-weight: 500;
       line-height: 1.4;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+      color: #160e09;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     }
 
     .gloss-title {
-      font-weight: 700;
+      font-weight: 800;
       color: var(--crimson-royal);
       margin-bottom: 1px;
     }
@@ -999,6 +1041,7 @@
       font-style: italic;
       color: var(--ink-muted);
       margin: 0;
+      font-weight: 500;
     }
 
     .ref-footer-text {
@@ -1006,25 +1049,26 @@
       font-size: clamp(9px, 1.2vh, 10px);
       color: var(--ink-muted);
       line-height: 1.38;
-      border-top: 1px dashed rgba(182, 141, 64, 0.35);
+      border-top: 1px dashed rgba(179, 133, 43, 0.4);
       padding-top: 3px;
+      font-weight: 500;
     }
 
-    /* Chân trang in số trang */
     .page-footer-folio {
       flex-shrink: 0;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-top: 3px;
-      border-top: 1px solid rgba(182, 141, 64, 0.35);
+      border-top: 1px solid rgba(179, 133, 43, 0.4);
       font-family: var(--font-ui);
-      font-size: clamp(8.5px, 1.1vh, 9.5px);
+      font-size: clamp(9px, 1.15vh, 10px);
       color: var(--ink-light);
+      font-weight: 600;
     }
 
     .folio-num-bold {
-      font-weight: 700;
+      font-weight: 800;
       color: var(--crimson-royal);
     }
 
@@ -1037,7 +1081,7 @@
       border: 2px solid var(--gold-royal);
       border-radius: 6px;
       padding: 3px;
-      background: radial-gradient(circle at 50% 50%, #fffefb 0%, #ebd7b5 75%, #ddc093 100%);
+      background: radial-gradient(circle at 50% 50%, #ffffff 0%, #ebd7b5 75%, #ddc093 100%);
       box-shadow: inset 0 0 35px rgba(110, 75, 35, 0.18);
       display: flex;
       flex-direction: column;
@@ -1045,7 +1089,7 @@
 
     .back-cover-inner {
       flex: 1;
-      border: 1px solid rgba(141, 28, 32, 0.45);
+      border: 1px solid rgba(138, 20, 24, 0.45);
       border-radius: 4px;
       padding: clamp(14px, 2.5vh, 22px) clamp(12px, 2vw, 18px);
       display: flex;
@@ -1062,7 +1106,7 @@
       position: relative;
       z-index: 50;
       width: min(96vw, 1260px);
-      height: 40px;
+      height: 42px;
       margin-bottom: 8px;
       display: flex;
       align-items: center;
@@ -1072,13 +1116,13 @@
     }
 
     .tab-jump-btn {
-      padding: 5px 12px;
+      padding: 6px 13px;
       border-radius: 7px;
-      border: 1px solid rgba(182, 141, 64, 0.35);
-      background: rgba(255, 253, 248, 0.88);
-      color: var(--ink-muted);
-      font-size: 11px;
-      font-weight: 500;
+      border: 1px solid rgba(179, 133, 43, 0.4);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--ink-primary);
+      font-size: 11.5px;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
       backdrop-filter: blur(8px);
@@ -1095,25 +1139,24 @@
       background: var(--crimson-royal);
       color: #ffffff;
       border-color: var(--crimson-royal);
-      font-weight: 600;
-      box-shadow: 0 2px 8px rgba(141, 28, 32, 0.25);
+      font-weight: 700;
+      box-shadow: 0 3px 10px rgba(138, 20, 24, 0.3);
     }
 
-    /* Thông báo Toast */
     #actionNotification {
       position: fixed;
       bottom: 58px;
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: rgba(34, 21, 15, 0.92);
-      color: #faf5eb;
+      background: rgba(22, 14, 9, 0.95);
+      color: #ffffff;
       font-family: var(--font-ui);
-      font-size: 12px;
-      font-weight: 500;
-      padding: 8px 18px;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 8px 20px;
       border-radius: 99px;
-      border: 1px solid rgba(182, 141, 64, 0.4);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(179, 133, 43, 0.5);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
       opacity: 0;
       pointer-events: none;
       transition: all 0.25s ease;
@@ -1125,9 +1168,6 @@
     }
 
     /* =========================================================================
-       9. RESPONSIVE MOBILE TỐI ƯU (KHÔNG CUỘN, KHÔNG TRÀN)
-       ========================================================================= */
-        /* =========================================================================
        9. RESPONSIVE MOBILE & TABLET TỐI ƯU HOÀN HẢO (KHÔNG CUỘN, KHÔNG CHỒNG ĐÈ, DỄ ĐỌC)
        ========================================================================= */
     @media (max-width: 768px) {
@@ -1178,13 +1218,12 @@
         padding: 4px 8px;
       }
       .stage-nav-arrow {
-        display: none !important; /* Dùng chạm lướt và chạm mép sách tự nhiên */
+        display: none !important;
       }
       .storybook-stage {
         padding: 4px 6px;
       }
 
-      /* Khung viền trang trên di động: Tối ưu khoảng đệm sang trọng mà gọn ghẽ */
       .page-layout-frame {
         inset: 6px;
         padding: 8px 10px 6px 10px;
@@ -1211,17 +1250,16 @@
         justify-content: space-between;
       }
 
-      /* Đoạn văn sắc nét, tinh chỉnh cỡ chữ dễ đọc không tràn */
       .prose-paragraph {
-        font-size: 10.5px;
-        line-height: 1.42;
+        font-size: 11.5px;
+        line-height: 1.45;
+        font-weight: 500;
       }
       .prose-paragraph.dropcap::first-letter {
         font-size: 28px;
         padding: 0 4px 0 0;
       }
 
-      /* Bố cục split-hero trên mobile: Giữ 2 cột ngang để ảnh và nội dung song hành cân đối, KHÔNG CHỒNG LÊN NHAU! */
       .page-split-hero {
         flex-direction: row !important;
         gap: 6px;
@@ -1239,7 +1277,6 @@
         flex: 0.85 !important;
       }
 
-      /* Hộp tranh minh họa trên di động */
       .art-illustration-card {
         padding: 2px;
         height: 100%;
@@ -1259,41 +1296,39 @@
         line-height: 1.15;
       }
 
-      /* Hộp gọi ý / Callout trên di động */
       .callout-box {
         padding: 4px 6px;
         border-left-width: 2.5px;
       }
       .callout-title {
-        font-size: 8px;
+        font-size: 8.5px;
         margin-bottom: 1px;
       }
       .callout-box p {
-        font-size: 9.5px !important;
+        font-size: 10px !important;
         line-height: 1.35 !important;
+        font-weight: 500;
       }
 
-      /* Thẻ nhân vật 2x2 trên di động */
       .characters-2x2-grid {
         gap: 4px;
         flex-shrink: 0;
       }
       .character-pill-card {
         padding: 3px 5px;
-        font-size: 9px;
+        font-size: 9.5px;
         line-height: 1.32;
       }
       .character-pill-card strong {
-        font-size: 9.5px;
+        font-size: 10px;
       }
       .character-pill-card .char-icon {
         font-size: 10px;
       }
 
-      /* Trích dẫn phê bình trên di động */
       .quote-critic-mini {
         padding: 3px 6px;
-        font-size: 9px;
+        font-size: 9.5px;
         line-height: 1.32;
         border-left-width: 2px;
       }
@@ -1302,7 +1337,6 @@
         margin-top: 1px;
       }
 
-      /* Lưới 4 phương diện trên Trang 2 */
       .aspects-grid-container {
         gap: 3px;
       }
@@ -1310,15 +1344,14 @@
         padding: 3px 5px;
       }
       .aspect-box-title {
-        font-size: 8.5px;
+        font-size: 9px;
         margin-bottom: 1px;
       }
       .aspect-box-item p {
-        font-size: 8.5px;
+        font-size: 9px;
         line-height: 1.3;
       }
 
-      /* Đối sánh vi văn bản trên Trang 2 */
       .micro-comparison-box {
         padding: 4px 6px;
       }
@@ -1328,7 +1361,7 @@
       }
       .micro-column {
         padding: 3px 5px;
-        font-size: 8.5px;
+        font-size: 9px;
         line-height: 1.35;
       }
       .micro-badge {
@@ -1336,9 +1369,8 @@
         margin-bottom: 1px;
       }
 
-      /* Bảng đối chiếu Trang 4 */
       .comparison-table-clean {
-        font-size: 8.5px;
+        font-size: 9px;
         line-height: 1.3;
       }
       .comparison-table-clean thead th {
@@ -1356,7 +1388,6 @@
         max-height: 52px;
       }
 
-      /* Góc Cảo Thơm 4 ô thuật ngữ Trang 3 */
       .glossary-header-label {
         font-size: 8px;
       }
@@ -1365,11 +1396,11 @@
       }
       .gloss-mini-card {
         padding: 3px 5px;
-        font-size: 8.5px;
+        font-size: 9px;
         line-height: 1.3;
       }
       .gloss-title {
-        font-size: 8.5px;
+        font-size: 9px;
       }
       .academic-note-text {
         font-size: 8px;
@@ -1383,7 +1414,6 @@
         padding-top: 2px;
       }
 
-      /* Bìa trước và bìa sau trên di động */
       .cover-outer-frame,
       .back-cover-outer {
         inset: 5px;
@@ -1403,8 +1433,8 @@
         font-size: 19px;
       }
       .cover-subtitle-desc {
-        font-size: 9.5px;
-        line-height: 1.3;
+        font-size: 10px;
+        line-height: 1.32;
         margin-top: 2px;
       }
       .cover-art-box {
@@ -1547,7 +1577,7 @@
 
                 <!-- Họa phẩm bìa Thúy Kiều ôm đàn tỳ bà TRỌN VẸN 100% người và đàn -->
                 <div class="cover-art-box">
-                  <img src="assets/kieu-solo-lute.jpg" alt="Họa phẩm Thúy Kiều gảy đàn tỳ bà trọn vẹn" />
+                  <img draggable="false" src="assets/kieu-solo-lute.jpg" alt="Họa phẩm Thúy Kiều gảy đàn tỳ bà trọn vẹn" />
                 </div>
 
                 <div class="cover-footer-info">
@@ -1607,7 +1637,7 @@
 
                   <div class="split-right">
                     <figure class="art-illustration-card vertical-card">
-                      <img src="assets/kieu-watercolour.jpg" alt="Thúy Kiều ôm đàn tỳ bà bên hoa mẫu đơn" />
+                      <img draggable="false" src="assets/kieu-watercolour.jpg" alt="Thúy Kiều ôm đàn tỳ bà bên hoa mẫu đơn" />
                       <figcaption class="art-illustration-caption">Họa phẩm Thúy Kiều ôm đàn tỳ bà – tài hoa &amp; bi kịch.</figcaption>
                     </figure>
                   </div>
@@ -1691,7 +1721,7 @@
 
                   <div class="split-right" style="flex: 0.85;">
                     <figure class="art-illustration-card vertical-card">
-                      <img src="assets/kieu-van.jpg" alt="Tranh Thúy Kiều và Thúy Vân - Nguyễn Công Hoan" />
+                      <img draggable="false" src="assets/kieu-van.jpg" alt="Tranh Thúy Kiều và Thúy Vân - Nguyễn Công Hoan" />
                       <figcaption class="art-illustration-caption">Họa phẩm Kiều &amp; Vân (Nguyễn Công Hoan minh họa).</figcaption>
                     </figure>
                   </div>
@@ -1765,7 +1795,7 @@
 
                   <div class="split-right" style="flex: 0.85;">
                     <figure class="art-illustration-card vertical-card">
-                      <img src="assets/kim-van-kieu.jpg" alt="Ấn bản Kim Vân Kiều truyện" />
+                      <img draggable="false" src="assets/kim-van-kieu.jpg" alt="Ấn bản Kim Vân Kiều truyện" />
                       <figcaption class="art-illustration-caption">Ấn bản “Kim Vân Kiều truyện” – chất liệu nền tảng.</figcaption>
                     </figure>
                   </div>
@@ -1867,7 +1897,7 @@
 
                 <!-- Minh họa cảnh gặp gỡ ngày Thanh minh bên cầu đá (KHÔNG BỊ MẤT ĐẦU KIM TRỌNG) -->
                 <figure class="art-illustration-card landscape-card">
-                  <img src="assets/thanh-minh.jpg" alt="Cảnh du xuân tiết Thanh minh" />
+                  <img draggable="false" src="assets/thanh-minh.jpg" alt="Cảnh du xuân tiết Thanh minh" />
                   <figcaption class="art-illustration-caption">Hội Đạp thanh tiết Thanh minh – khúc dạo đầu định mệnh được thi vị hóa tuyệt mỹ trong Truyện Kiều.</figcaption>
                 </figure>
 
@@ -1960,7 +1990,7 @@
   <!-- =====================================================================
        JAVASCRIPT: TURN.JS INITIALIZATION & RESPONSIVE ENGINE
        ===================================================================== -->
-    <script>
+        <script>
     $(document).ready(function () {
       'use strict';
 
@@ -1968,7 +1998,7 @@
       var audioContext = null;
 
       /* ---------------------------------------------------------------------
-         1. TỔNG HỢP ÂM THANH LẬT GIẤY TỰ NHIÊN (WEB AUDIO API)
+         1. TỔNG HỢP ÂM THANH LẬT GIẤY TỰ NHIÊN, DỊU ÊM (WEB AUDIO API)
          --------------------------------------------------------------------- */
       function playFlipSound() {
         if (!soundActive) return;
@@ -1982,11 +2012,12 @@
           }
           if (!audioContext) return;
 
-          var bufferSize = audioContext.sampleRate * 0.16;
+          // Âm thanh lật giấy êm dịu, mềm mại kéo dài tự nhiên đồng điệu với tốc độ lật 820ms
+          var bufferSize = audioContext.sampleRate * 0.32;
           var buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
           var data = buffer.getChannelData(0);
           for (var i = 0; i < bufferSize; i++) {
-            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioContext.sampleRate * 0.035));
+            data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (audioContext.sampleRate * 0.08));
           }
 
           var noise = audioContext.createBufferSource();
@@ -1994,12 +2025,12 @@
 
           var filter = audioContext.createBiquadFilter();
           filter.type = 'lowpass';
-          filter.frequency.setValueAtTime(1200, audioContext.currentTime);
-          filter.frequency.exponentialRampToValueAtTime(360, audioContext.currentTime + 0.16);
+          filter.frequency.setValueAtTime(800, audioContext.currentTime);
+          filter.frequency.exponentialRampToValueAtTime(220, audioContext.currentTime + 0.32);
 
           var gain = audioContext.createGain();
-          gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.16);
+          gain.gain.setValueAtTime(0.22, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.005, audioContext.currentTime + 0.32);
 
           noise.connect(filter);
           filter.connect(gain);
@@ -2010,7 +2041,7 @@
       }
 
       /* ---------------------------------------------------------------------
-         2. TÍNH TOÁN KÍCH THƯỚC TRANG ĐỘNG CHO PC & ĐIỆN THOẠI (TỐI ƯU TOÀN DIỆN)
+         2. TÍNH TOÁN KÍCH THƯỚC TRANG ĐỘNG CHO PC & ĐIỆN THOẠI
          --------------------------------------------------------------------- */
       function calculateDimensions() {
         var winW = window.innerWidth || $(window).width();
@@ -2021,13 +2052,11 @@
         var bookW, bookH;
 
         if (isMobile) {
-          // Điện thoại: Hiển thị 1 trang rộng 90-92vw, chiều cao tự nhiên tỉ lệ 1:1.50
           var targetW = Math.min(Math.round(winW * 0.91), 410);
           var targetH = Math.min(availableH, Math.round(targetW * 1.50));
           bookW = Math.round(targetH / 1.50);
           bookH = targetH;
         } else {
-          // Máy tính / Laptop: 2 trang mở rộng cân đối, sang trọng
           var targetH = Math.min(availableH, 780);
           var targetW = Math.min(winW * 0.92, targetH * 1.44);
           bookH = Math.round(targetW / 1.44);
@@ -2040,23 +2069,22 @@
       var dim = calculateDimensions();
       var $flipbook = $('#flipbook');
 
-      // Đọc trang ban đầu từ tham số URL ?page=X hoặc mặc định 1
       var urlParams = new URLSearchParams(window.location.search);
       var startPage = parseInt(urlParams.get('page') || '1', 10);
       if (isNaN(startPage) || startPage < 1) startPage = 1;
       if (startPage > 6) startPage = 6;
 
       /* ---------------------------------------------------------------------
-         3. KHỞI TẠO TURN.JS FLIPBOOK & CĂN GIỮA ĐỘNG
+         3. KHỞI TẠO TURN.JS FLIPBOOK - ĐỘNG TÁC LẬT MỀM MỎNG TỪ TỐN (820ms, NHIỀU KHUNG HÌNH)
          --------------------------------------------------------------------- */
       $flipbook.turn({
         width: dim.width,
         height: dim.height,
-        elevation: 350,
-        gradients: true,
+        elevation: 320,          // Độ vồng giấy 3D tự nhiên, mềm mại
+        gradients: true,         // Hiệu ứng chuyển sắc ánh sáng và bóng đổ trang giấy
         autoCenter: true,
-        duration: 600,
-        acceleration: true,
+        duration: 820,           // 820ms: Tốc độ từ tốn, chân thực như lật từng trang giấy mỹ thuật thật
+        acceleration: true,      // GPU Compositing 60 FPS mượt mà
         display: dim.isMobile ? 'single' : 'double',
         page: startPage
       });
@@ -2107,63 +2135,97 @@
       updateIndicators(startPage);
 
       /* ---------------------------------------------------------------------
-         4. SỰ KIỆN NÚT TIẾP / LÙI & TAB NHẢY TRANG
+         4. SỰ KIỆN NÚT TIẾP / LÙI & TAB NHẢY TRANG (CÓ KHÓA HOẠT HỌA AN TOÀN)
          --------------------------------------------------------------------- */
-      $('#btnPrevPage, #stagePrev').on('click', function () {
-        $flipbook.turn('previous');
+      function safeTurnNext() {
+        if ($flipbook.turn('animating')) return;
+        var curr = $flipbook.turn('page');
+        var total = $flipbook.turn('pages');
+        if (curr < total) $flipbook.turn('next');
+      }
+
+      function safeTurnPrev() {
+        if ($flipbook.turn('animating')) return;
+        var curr = $flipbook.turn('page');
+        if (curr > 1) $flipbook.turn('previous');
+      }
+
+      $('#btnPrevPage, #stagePrev').on('click', function (e) {
+        e.stopPropagation();
+        safeTurnPrev();
       });
 
-      $('#btnNextPage, #stageNext').on('click', function () {
-        $flipbook.turn('next');
+      $('#btnNextPage, #stageNext').on('click', function (e) {
+        e.stopPropagation();
+        safeTurnNext();
       });
 
-      $('.tab-jump-btn').on('click', function () {
+      $('.tab-jump-btn').on('click', function (e) {
+        e.stopPropagation();
         var targetPage = parseInt($(this).data('page'), 10);
-        $flipbook.turn('page', targetPage);
-      });
-
-      // Phím mũi tên bàn phím
-      $(document).on('keydown', function (e) {
-        if (e.keyCode === 37) $flipbook.turn('previous'); // Trái
-        if (e.keyCode === 39) $flipbook.turn('next');     // Phải
-      });
-
-      /* ---------------------------------------------------------------------
-         5. TÍNH NĂNG CHẠM / NHẤP TRANG ĐỂ LẬT (CLICK TO FLIP TRANG TRƯỚC / SAU)
-            - Nhấp nửa phải sách (hoặc trang bên phải): Lật tới
-            - Nhấp nửa trái sách (hoặc trang bên trái): Lật lùi
-         --------------------------------------------------------------------- */
-      $('#flipbook').on('click', function (e) {
-        if ($(e.target).closest('button, a, input, [role="button"]').length) return;
-
-        var currPage = $flipbook.turn('page');
-        var totalPages = $flipbook.turn('pages');
-        var offset = $flipbook.offset();
-        if (!offset) return;
-
-        var clickX = e.pageX - offset.left;
-        var bookW = $flipbook.width();
-
-        if (currPage === 1) {
-          $flipbook.turn('next');
-        } else if (currPage === totalPages) {
-          $flipbook.turn('previous');
-        } else if (clickX > bookW / 2) {
-          // Bấm nửa phải -> Lật sang trang tiếp theo
-          $flipbook.turn('next');
-        } else {
-          // Bấm nửa trái -> Lùi về trang trước
-          $flipbook.turn('previous');
+        if (!$flipbook.turn('animating')) {
+          $flipbook.turn('page', targetPage);
         }
       });
 
-      // Cập nhật con trỏ chuột khi rê trên sách (Gợi ý nhấp lật trang)
+      $(document).on('keydown', function (e) {
+        if (e.keyCode === 37) safeTurnPrev();
+        if (e.keyCode === 39) safeTurnNext();
+      });
+
+      /* ---------------------------------------------------------------------
+         5. TÍNH NĂNG NHẤP TRANG (CLICK TO FLIP) - CHUẨN XÁC 100% TẠI GỜ GÁY
+            - Nhấp trang bên phải / nửa phải: Luôn lật tới
+            - Nhấp trang bên trái / nửa trái: Luôn lùi lại
+         --------------------------------------------------------------------- */
+      $('#flipbook').on('click', function (e) {
+        if ($(e.target).closest('button, a, input, [role="button"]').length) return;
+        if ($flipbook.turn('animating')) return;
+
+        var currPage = $flipbook.turn('page');
+        var totalPages = $flipbook.turn('pages');
+
+        if (currPage === 1) {
+          safeTurnNext();
+          return;
+        }
+        if (currPage === totalPages) {
+          safeTurnPrev();
+          return;
+        }
+
+        if (dim.isMobile) {
+          var rect = this.getBoundingClientRect();
+          var clickX = e.clientX - rect.left;
+          if (clickX >= rect.width / 2) {
+            safeTurnNext();
+          } else {
+            safeTurnPrev();
+          }
+        } else {
+          var $clickedPage = $(e.target).closest('.page');
+          if ($clickedPage.length) {
+            var pageNum = parseInt($clickedPage.attr('data-page'), 10);
+            if ($clickedPage.hasClass('odd') || pageNum % 2 !== 0) {
+              safeTurnNext();
+            } else {
+              safeTurnPrev();
+            }
+          } else {
+            var fbRect = this.getBoundingClientRect();
+            var midX = fbRect.left + fbRect.width / 2;
+            if (e.clientX >= midX) {
+              safeTurnNext();
+            } else {
+              safeTurnPrev();
+            }
+          }
+        }
+      });
+
+      // Cập nhật con trỏ chuột và gợi ý hướng lật
       $('#flipbook').on('mousemove', function (e) {
         if (dim.isMobile) return;
-        var offset = $flipbook.offset();
-        if (!offset) return;
-        var clickX = e.pageX - offset.left;
-        var bookW = $flipbook.width();
         var currPage = $flipbook.turn('page');
         var totalPages = $flipbook.turn('pages');
 
@@ -2171,17 +2233,19 @@
           $(this).attr('title', 'Nhấp để mở sách (Lật sang trang 1) →');
         } else if (currPage === totalPages) {
           $(this).attr('title', '← Nhấp để lùi về trang trước');
-        } else if (clickX > bookW / 2) {
-          $(this).attr('title', 'Nhấp trang bên phải để lật tiếp →');
         } else {
-          $(this).attr('title', '← Nhấp trang bên trái để lùi lại');
+          var fbRect = this.getBoundingClientRect();
+          var midX = fbRect.left + fbRect.width / 2;
+          if (e.clientX >= midX) {
+            $(this).attr('title', 'Nhấp trang bên phải để lật tiếp →');
+          } else {
+            $(this).attr('title', '← Nhấp trang bên trái để lùi lại');
+          }
         }
       });
 
       /* ---------------------------------------------------------------------
-         6. CỬ CHỈ VUỐT TAY TỰ NHIÊN TRÊN DI ĐỘNG (TOUCH SWIPE GESTURE)
-            - Vuốt từ phải sang trái (Swipe Left): Lật tiếp
-            - Vuốt từ trái sang phải (Swipe Right): Lùi lại
+         6. CỬ CHỈ VUỐT TAY TRÊN DI ĐỘNG (TOUCH SWIPE GESTURE) - KHÔNG KÉO ẢNH
          --------------------------------------------------------------------- */
       var touchStartX = 0;
       var touchStartY = 0;
@@ -2200,24 +2264,21 @@
         var deltaY = touch.clientY - touchStartY;
         var elapsed = Date.now() - touchStartTime;
 
-        // Vuốt ngang dứt khoát (> 35px và góc ngang chủ đạo)
-        if (Math.abs(deltaX) > 35 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2 && elapsed < 800) {
+        if (Math.abs(deltaX) > 30 && Math.abs(deltaX) > Math.abs(deltaY) * 1.15 && elapsed < 800) {
           if (deltaX < 0) {
-            // Vuốt từ phải sang trái -> Lật tiếp
-            $flipbook.turn('next');
+            safeTurnNext();
           } else {
-            // Vuốt từ trái sang phải -> Lùi lại
-            $flipbook.turn('previous');
+            safeTurnPrev();
           }
           if (e && typeof e.preventDefault === 'function') e.preventDefault();
         }
       });
 
       /* ---------------------------------------------------------------------
-         7. HIỆU ỨNG HÉ MỞ GÓC SÁCH (PEEL) & NGHIÊNG 3D VẬT LÝ TRÊN MÁY TÍNH
+         7. HIỆU ỨNG HÉ MỞ GÓC SÁCH (PEEL) & NGHIÊNG BÀN ĐỌC 3D (TỐI ƯU 60 FPS)
          --------------------------------------------------------------------- */
       $('.storybook-stage').on('mousemove', function (e) {
-        if (dim.isMobile) return;
+        if (dim.isMobile || $flipbook.turn('animating')) return;
         var offset = $flipbook.offset();
         if (!offset) return;
         var x = e.pageX - offset.left;
@@ -2225,12 +2286,12 @@
         var w = $flipbook.width();
         var h = $flipbook.height();
 
-        if (x > w * 0.82 && y > h * 0.78) {
+        if (x > w * 0.84 && y > h * 0.8) {
           if (!$flipbook.data('peeling')) {
             $flipbook.data('peeling', true);
             try { $flipbook.turn('peel', 'br'); } catch (err) {}
           }
-        } else if (x < w * 0.18 && y > h * 0.78) {
+        } else if (x < w * 0.16 && y > h * 0.8) {
           if (!$flipbook.data('peeling')) {
             $flipbook.data('peeling', true);
             try { $flipbook.turn('peel', 'bl'); } catch (err) {}
@@ -2250,17 +2311,19 @@
         }
       });
 
-      // Hiệu ứng nghiêng 3D bàn đọc (Chỉ máy tính)
+      var tiltRaf = null;
       $(document).on('mousemove', function (e) {
-        if (dim.isMobile) return;
-        var winW = $(window).width();
-        var winH = $(window).height();
-        var tiltX = (e.clientY / winH - 0.5) * -5;
-        var tiltY = (e.clientX / winW - 0.5) * 5;
+        if (dim.isMobile || $flipbook.turn('animating')) return;
+        if (tiltRaf) cancelAnimationFrame(tiltRaf);
+        tiltRaf = requestAnimationFrame(function () {
+          var winW = window.innerWidth;
+          var winH = window.innerHeight;
+          var tiltX = (e.clientY / winH - 0.5) * -4.5;
+          var tiltY = (e.clientX / winW - 0.5) * 4.5;
 
-        $('.book-wrapper').css({
-          'transform': 'perspective(1400px) rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg)',
-          'transition': 'transform 0.1s ease-out'
+          $('.book-wrapper').css({
+            'transform': 'perspective(1400px) rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg)'
+          });
         });
       });
 
