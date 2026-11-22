@@ -1103,108 +1103,14 @@
        8. THANH CHÂN TRANG ĐIỀU HƯỚNG NHANH
        ========================================================================= */
     .storybook-footer {
-      position: relative;
-      z-index: 50;
-      width: min(96vw, 1260px);
-      height: 42px;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      font-family: var(--font-ui);
-    }
-
-    .tab-jump-btn {
-      padding: 6px 13px;
-      border-radius: 7px;
-      border: 1px solid rgba(179, 133, 43, 0.4);
-      background: rgba(255, 255, 255, 0.95);
-      color: var(--ink-primary);
-      font-size: 11.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      backdrop-filter: blur(8px);
-    }
-
-    .tab-jump-btn:hover {
-      border-color: var(--gold-royal);
-      color: var(--crimson-royal);
-      background: #ffffff;
-      transform: translateY(-1px);
-    }
-
-    .tab-jump-btn.active {
-      background: var(--crimson-royal);
-      color: #ffffff;
-      border-color: var(--crimson-royal);
-      font-weight: 700;
-      box-shadow: 0 3px 10px rgba(138, 20, 24, 0.3);
-    }
-
-    #actionNotification {
-      position: fixed;
-      bottom: 58px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: rgba(22, 14, 9, 0.95);
-      color: #ffffff;
-      font-family: var(--font-ui);
-      font-size: 12.5px;
-      font-weight: 600;
-      padding: 8px 20px;
-      border-radius: 99px;
-      border: 1px solid rgba(179, 133, 43, 0.5);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.25s ease;
-      z-index: 1000;
-    }
-    #actionNotification.visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* =========================================================================
-       9. RESPONSIVE MOBILE & TABLET TỐI ƯU HOÀN HẢO (KHÔNG CUỘN, KHÔNG CHỒNG ĐÈ, DỄ ĐỌC)
-       ========================================================================= */
-    @media (max-width: 768px) {
-      .storybook-header {
-        height: 42px;
-        padding: 0 8px;
-        margin-top: 4px;
-      }
-      .brand-subheading,
-      .btn-action .label-text {
-        display: none !important;
-      }
-      .brand-heading {
-        font-size: 12.5px;
-        max-width: 160px;
-      }
-      .brand-badge {
-        font-size: 9.5px;
-        padding: 2px 5px;
-      }
-      .nav-arrow-btn {
-        width: 28px;
-        height: 28px;
-      }
-      .page-indicator-badge {
-        font-size: 10.5px;
-        padding: 3px 8px;
-      }
-      .btn-action {
-        padding: 5px 7px;
-      }
-      .storybook-footer {
         height: 38px;
         margin-bottom: 4px;
         overflow-x: auto;
+        overflow-y: hidden;
+        display: flex;
         justify-content: flex-start;
         padding: 0 6px;
+        gap: 5px;
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         -ms-overflow-style: none;
@@ -1213,205 +1119,334 @@
         display: none;
       }
       .tab-jump-btn {
-        flex-shrink: 0;
         font-size: 10px;
-        padding: 4px 8px;
+        padding: 4px 9px;
+        white-space: nowrap !important;
+        flex-shrink: 0;
+      }
+
+      .storybook-stage {
+        padding: 0;
       }
       .stage-nav-arrow {
         display: none !important;
       }
-      .storybook-stage {
-        padding: 4px 6px;
+
+      .book-wrapper {
+        box-shadow: 0 8px 24px rgba(60, 30, 10, 0.28);
+        transform-origin: center center;
+        transition: transform 0.15s ease-out;
+        margin: auto;
       }
 
       .page-layout-frame {
         inset: 6px;
-        padding: 8px 10px 6px 10px;
+        padding: 10px 12px 8px 12px;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
       }
-      .page-header-bar {
-        padding-bottom: 3px;
-        margin-bottom: 4px;
+      .frame-corner {
+        width: 18px;
+        height: 18px;
       }
       .page-kicker {
         font-size: 8px;
+        letter-spacing: 0.6px;
         margin-bottom: 1px;
       }
       .page-main-title {
         font-size: 12.5px;
-        line-height: 1.22;
+        line-height: 1.24;
       }
       .page-seal-badge {
         width: 22px;
         height: 22px;
         font-size: 9px;
       }
+
       .page-body-container {
-        gap: 5px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
         justify-content: space-between;
+        gap: 6px;
+        min-height: 0;
+        overflow: visible;
       }
 
       .prose-paragraph {
-        font-size: 11.5px;
+        font-size: 11px;
         line-height: 1.45;
         font-weight: 500;
+        margin: 0;
       }
       .prose-paragraph.dropcap::first-letter {
         font-size: 28px;
-        padding: 0 4px 0 0;
+        line-height: 0.85;
+        padding: 1px 4px 0 0;
       }
 
       .page-split-hero {
+        display: flex;
         flex-direction: row !important;
-        gap: 6px;
+        gap: 8px;
         align-items: stretch;
-        min-height: 98px;
-        max-height: 118px;
         flex-shrink: 0;
+        min-height: 0;
+        max-height: none;
       }
       .split-left {
         flex: 1.25 !important;
-        gap: 3px;
-        justify-content: center;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        justify-content: space-between;
       }
       .split-right {
         flex: 0.85 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .art-illustration-card {
-        padding: 2px;
-        height: 100%;
-        max-height: 116px;
+        padding: 3px;
+        height: auto;
+        border: 1px solid rgba(184, 150, 90, 0.4);
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.85);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         justify-content: center;
       }
       .art-illustration-card.vertical-card {
-        max-height: 116px;
+        max-height: 125px;
       }
       .art-illustration-card.vertical-card img {
-        max-height: 88px;
+        max-height: 96px;
+        width: auto;
+        max-width: 100%;
         object-fit: contain;
+        pointer-events: none !important;
+        -webkit-user-drag: none;
       }
       .art-illustration-caption {
         font-size: 7.5px;
         margin-top: 1px;
         line-height: 1.15;
+        text-align: center;
+      }
+
+      .art-illustration-card.landscape-card {
+        max-height: 72px;
+        margin: 2px 0;
+      }
+      .art-illustration-card.landscape-card img {
+        max-height: 52px;
+        width: auto;
+        max-width: 100%;
+        object-fit: cover;
+        pointer-events: none !important;
+        -webkit-user-drag: none;
       }
 
       .callout-box {
-        padding: 4px 6px;
-        border-left-width: 2.5px;
+        padding: 5px 8px;
+        background: rgba(246, 241, 230, 0.7);
+        border-left: 3px solid var(--crimson-royal);
+        border-radius: 3px;
       }
       .callout-title {
-        font-size: 8.5px;
-        margin-bottom: 1px;
+        font-size: 9px;
+        font-weight: 700;
+        color: var(--crimson-royal);
+        margin-bottom: 2px;
       }
       .callout-box p {
-        font-size: 10px !important;
-        line-height: 1.35 !important;
+        font-size: 9.5px !important;
+        line-height: 1.36 !important;
         font-weight: 500;
+        color: var(--ink-body);
       }
 
       .characters-2x2-grid {
-        gap: 4px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
         flex-shrink: 0;
       }
       .character-pill-card {
-        padding: 3px 5px;
-        font-size: 9.5px;
+        padding: 4px 6px;
+        font-size: 9px;
         line-height: 1.32;
+        border-radius: 4px;
       }
       .character-pill-card strong {
-        font-size: 10px;
+        font-size: 9.5px;
       }
       .character-pill-card .char-icon {
         font-size: 10px;
+        margin-right: 2px;
       }
 
       .quote-critic-mini {
-        padding: 3px 6px;
-        font-size: 9.5px;
-        line-height: 1.32;
-        border-left-width: 2px;
+        padding: 4px 6px;
+        font-size: 9px;
+        line-height: 1.34;
+        border-left: 2.5px solid var(--gold-antique);
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 0 3px 3px 0;
+        font-style: italic;
+        color: var(--ink-secondary);
+        margin: 0;
       }
       .quote-critic-mini cite {
+        display: block;
         font-size: 7.5px;
+        color: var(--crimson-royal);
         margin-top: 1px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 1.2;
       }
 
       .aspects-grid-container {
-        gap: 3px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
       }
       .aspect-box-item {
-        padding: 3px 5px;
+        padding: 4px 6px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(184, 150, 90, 0.35);
+        border-radius: 3px;
       }
       .aspect-box-title {
-        font-size: 9px;
+        font-size: 8.5px;
+        font-weight: 700;
+        color: var(--crimson-royal);
         margin-bottom: 1px;
       }
       .aspect-box-item p {
-        font-size: 9px;
+        font-size: 8.5px;
         line-height: 1.3;
+        margin: 0;
+        color: var(--ink-body);
       }
 
       .micro-comparison-box {
         padding: 4px 6px;
+        background: rgba(246, 241, 230, 0.75);
+        border: 1px solid rgba(184, 150, 90, 0.4);
+        border-radius: 4px;
+        flex-shrink: 0;
       }
       .micro-header {
-        font-size: 8px;
-        margin-bottom: 2px;
+        font-size: 8.5px;
+        font-weight: 700;
+        color: var(--crimson-royal);
+        text-align: center;
+        margin-bottom: 3px;
+      }
+      .micro-comparison-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
       }
       .micro-column {
-        padding: 3px 5px;
-        font-size: 9px;
-        line-height: 1.35;
+        padding: 4px 6px;
+        font-size: 8.5px;
+        line-height: 1.34;
+        background: #ffffff;
+        border-radius: 3px;
+        border: 1px solid rgba(184, 150, 90, 0.25);
       }
       .micro-badge {
-        font-size: 7.5px;
-        margin-bottom: 1px;
-      }
-
-      .comparison-table-clean {
-        font-size: 9px;
-        line-height: 1.3;
-      }
-      .comparison-table-clean thead th {
         font-size: 8px;
-        padding: 2px 4px;
-      }
-      .comparison-table-clean tbody td {
-        padding: 2px 4px;
-      }
-      .art-illustration-card.landscape-card {
-        max-height: 68px;
-        margin: 1px 0;
-      }
-      .art-illustration-card.landscape-card img {
-        max-height: 52px;
+        font-weight: 700;
+        display: block;
+        margin-bottom: 2px;
       }
 
       .glossary-header-label {
-        font-size: 8px;
+        font-size: 8.5px;
+        font-weight: 700;
+        color: var(--crimson-royal);
+        margin: 2px 0 1px 0;
+        letter-spacing: 0.3px;
       }
       .glossary-2x2-grid {
-        gap: 3px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4px;
+        flex-shrink: 0;
       }
       .gloss-mini-card {
-        padding: 3px 5px;
-        font-size: 9px;
+        padding: 4px 6px;
+        font-size: 8.5px;
         line-height: 1.3;
+        background: #ffffff;
+        border: 1px solid rgba(184, 150, 90, 0.35);
+        border-radius: 3px;
       }
       .gloss-title {
         font-size: 9px;
+        font-weight: 700;
+        color: var(--crimson-royal);
+        margin-bottom: 1px;
       }
       .academic-note-text {
         font-size: 8px;
+        line-height: 1.3;
+        color: var(--ink-secondary);
+        margin-top: 2px;
       }
+
+      .comparison-table-clean {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 8.5px;
+        line-height: 1.32;
+        border: 1px solid rgba(184, 150, 90, 0.4);
+        background: #ffffff;
+        flex-shrink: 0;
+      }
+      .comparison-table-clean thead th {
+        font-size: 8.5px;
+        font-weight: 700;
+        padding: 4px 6px;
+        background: linear-gradient(135deg, #8a1418, #630c10) !important;
+        color: #ffffff !important;
+        border-bottom: 1px solid rgba(184, 150, 90, 0.4);
+        text-align: left;
+      }
+      .comparison-table-clean tbody td {
+        padding: 3px 5px;
+        border-bottom: 1px solid rgba(184, 150, 90, 0.2);
+        vertical-align: top;
+      }
+
       .ref-footer-text {
         font-size: 8px;
-        padding-top: 2px;
+        line-height: 1.35;
+        color: var(--ink-secondary);
+        margin-top: 2px;
+        padding: 0;
+        flex-shrink: 0;
       }
       .page-footer-folio {
-        font-size: 8px;
-        padding-top: 2px;
+        margin-top: auto;
+        padding-top: 6px;
+        border-top: 1px dashed rgba(184, 150, 90, 0.45);
+        font-size: 8.5px;
+        line-height: 1.2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-shrink: 0;
       }
 
       .cover-outer-frame,
@@ -1736,7 +1771,7 @@
                       Kiều đi tảo mộ về, thấy nấm mồ vô chủ của Đạm Tiên thì rơi nước mắt xót xa cho hoàn cảnh cô quạnh của người ca kỹ.
                     </div>
                     <div class="micro-column target-col">
-                      <span class="micro-badge">🪷 Sáng tạo của Nguyễn Du (Thơ Nôm)</span>
+                      <span class="micro-badge">🌸 Sáng tạo của Nguyễn Du (Thơ Nôm)</span>
                       “Sè sè nấm đất bên đàng,<br>Dầu dầu ngọn cỏ nửa vàng nửa xanh…<br>Đau đớn thay phận đàn bà,<br>Lời rằng bạc mệnh cũng là lời chung.”
                     </div>
                   </div>
@@ -1815,7 +1850,7 @@
                     Thể loại tự sự văn xuôi cổ điển chia theo hồi, mỗi hồi có đầu đề đối ngẫu giàu kịch tính.
                   </div>
                   <div class="gloss-mini-card">
-                    <div class="gloss-title">🪷 Truyện thơ Nôm lục bát</div>
+                    <div class="gloss-title">🌸 Truyện thơ Nôm lục bát</div>
                     Thể loại tự sự bằng thơ Nôm Việt Nam, kết hợp tự sự biến cố với trữ tình sâu lắng.
                   </div>
                   <div class="gloss-mini-card">
@@ -1863,7 +1898,7 @@
                     <tr>
                       <th style="width:20%;">Phương diện</th>
                       <th style="width:40%;">🏮 Kim Vân Kiều</th>
-                      <th style="width:40%;">🪷 Truyện Kiều</th>
+                      <th style="width:40%;">🌸 Truyện Kiều</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -2041,32 +2076,52 @@
       }
 
       /* ---------------------------------------------------------------------
-         2. TÍNH TOÁN KÍCH THƯỚC TRANG ĐỘNG CHO PC & ĐIỆN THOẠI
+         2. HỆ THỐNG CĂN CHỈNH TỰ ĐỘNG ĐA THIẾT BỊ (ADAPTIVE OMNI-SCALE ENGINE)
+            - Giữ tỉ lệ chuẩn tuyệt đối cho mọi dòng máy (iPhone SE, 13, 14, 15, Samsung, Xiaomi)
+            - Tự động co giãn đồng bộ cả chữ, khung, ảnh; tuyệt đối không bao giờ bị lệch hay chồng đè!
          --------------------------------------------------------------------- */
-      function calculateDimensions() {
+      var BASE_MOBILE_W = 380;
+      var BASE_MOBILE_H = 610;
+      var BASE_DESK_W = 1040;
+      var BASE_DESK_H = 700;
+
+      function getLayoutMode() {
         var winW = window.innerWidth || $(window).width();
-        var winH = window.innerHeight || $(window).height();
-        var isMobile = winW < 768;
-
-        var availableH = winH - (isMobile ? 86 : 105);
-        var bookW, bookH;
-
-        if (isMobile) {
-          var targetW = Math.min(Math.round(winW * 0.91), 410);
-          var targetH = Math.min(availableH, Math.round(targetW * 1.50));
-          bookW = Math.round(targetH / 1.50);
-          bookH = targetH;
-        } else {
-          var targetH = Math.min(availableH, 780);
-          var targetW = Math.min(winW * 0.92, targetH * 1.44);
-          bookH = Math.round(targetW / 1.44);
-          bookW = Math.round(targetW);
-        }
-
-        return { width: bookW, height: bookH, isMobile: isMobile };
+        return winW < 768;
       }
 
-      var dim = calculateDimensions();
+      function applyAdaptiveScale() {
+        var winW = window.innerWidth || $(window).width();
+        var winH = window.innerHeight || $(window).height();
+        var isMobile = getLayoutMode();
+
+        if (isMobile) {
+          var availW = winW * 0.94;
+          var availH = winH - 86; // Trừ header (42px) + footer (38px) + an toàn (6px)
+          var scale = Math.min(availW / BASE_MOBILE_W, availH / BASE_MOBILE_H);
+          scale = Math.min(Math.max(scale, 0.52), 1.00);
+
+          $('.book-wrapper').css({
+            'transform': 'scale(' + scale.toFixed(4) + ')',
+            'transform-origin': 'center center'
+          });
+        } else {
+          var availW = winW * 0.94;
+          var availH = winH - 100;
+          var scale = Math.min(availW / BASE_DESK_W, availH / BASE_DESK_H);
+          scale = Math.min(Math.max(scale, 0.60), 1.25);
+
+          $('.book-wrapper').css({
+            'transform': 'scale(' + scale.toFixed(4) + ')',
+            'transform-origin': 'center center'
+          });
+        }
+      }
+
+      var isMobile = getLayoutMode();
+      var bookInitW = isMobile ? BASE_MOBILE_W : BASE_DESK_W;
+      var bookInitH = isMobile ? BASE_MOBILE_H : BASE_DESK_H;
+
       var $flipbook = $('#flipbook');
 
       var urlParams = new URLSearchParams(window.location.search);
@@ -2074,24 +2129,24 @@
       if (isNaN(startPage) || startPage < 1) startPage = 1;
       if (startPage > 6) startPage = 6;
 
-      /* ---------------------------------------------------------------------
-         3. KHỞI TẠO TURN.JS FLIPBOOK - ĐỘNG TÁC LẬT MỀM MỎNG TỪ TỐN (820ms, NHIỀU KHUNG HÌNH)
-         --------------------------------------------------------------------- */
       $flipbook.turn({
-        width: dim.width,
-        height: dim.height,
-        elevation: 320,          // Độ vồng giấy 3D tự nhiên, mềm mại
-        gradients: true,         // Hiệu ứng chuyển sắc ánh sáng và bóng đổ trang giấy
-        autoCenter: true,
-        duration: 820,           // 820ms: Tốc độ từ tốn, chân thực như lật từng trang giấy mỹ thuật thật
-        acceleration: true,      // GPU Compositing 60 FPS mượt mà
-        display: dim.isMobile ? 'single' : 'double',
+        width: bookInitW,
+        height: bookInitH,
+        elevation: 320,
+        gradients: true,
+        autoCenter: !isMobile,
+        duration: 820,
+        acceleration: true,
+        display: isMobile ? 'single' : 'double',
         page: startPage
       });
 
+      // Áp dụng scale tự động ngay sau khi khởi tạo
+      applyAdaptiveScale();
+
       function updateBookPosition(page) {
         var total = $flipbook.turn('pages');
-        if (dim.isMobile) {
+        if (getLayoutMode()) {
           $flipbook.css('transform', 'translateX(0)');
           return;
         }
@@ -2109,7 +2164,7 @@
         var text = 'Trang ' + page + ' / ' + total;
         if (page === 1) text = 'Bìa trước';
         else if (page === total) text = 'Bìa sau';
-        else if (!dim.isMobile && page > 1 && page < total) {
+        else if (!isMobile && page > 1 && page < total) {
           var leftPage = page % 2 === 0 ? page : page - 1;
           var rightPage = leftPage + 1;
           text = 'Trang ' + (leftPage - 1) + ' – ' + (rightPage - 1) + ' / 5';
@@ -2194,7 +2249,7 @@
           return;
         }
 
-        if (dim.isMobile) {
+        if (getLayoutMode()) {
           var rect = this.getBoundingClientRect();
           var clickX = e.clientX - rect.left;
           if (clickX >= rect.width / 2) {
@@ -2225,7 +2280,7 @@
 
       // Cập nhật con trỏ chuột và gợi ý hướng lật
       $('#flipbook').on('mousemove', function (e) {
-        if (dim.isMobile) return;
+        if (getLayoutMode()) return;
         var currPage = $flipbook.turn('page');
         var totalPages = $flipbook.turn('pages');
 
@@ -2278,7 +2333,7 @@
          7. HIỆU ỨNG HÉ MỞ GÓC SÁCH (PEEL) & NGHIÊNG BÀN ĐỌC 3D (TỐI ƯU 60 FPS)
          --------------------------------------------------------------------- */
       $('.storybook-stage').on('mousemove', function (e) {
-        if (dim.isMobile || $flipbook.turn('animating')) return;
+        if (isMobile || $flipbook.turn('animating')) return;
         var offset = $flipbook.offset();
         if (!offset) return;
         var x = e.pageX - offset.left;
@@ -2313,7 +2368,7 @@
 
       var tiltRaf = null;
       $(document).on('mousemove', function (e) {
-        if (dim.isMobile || $flipbook.turn('animating')) return;
+        if (isMobile || $flipbook.turn('animating')) return;
         if (tiltRaf) cancelAnimationFrame(tiltRaf);
         tiltRaf = requestAnimationFrame(function () {
           var winW = window.innerWidth;
@@ -2331,15 +2386,20 @@
          8. TỰ ĐỘNG THÍCH ỨNG KÍCH THƯỚC KHI CO DÃN MÀN HÌNH (RESIZE)
          --------------------------------------------------------------------- */
       var resizeTimer = null;
-      $(window).on('resize', function () {
+      $(window).on('resize orientationchange', function () {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(function () {
-          var newDim = calculateDimensions();
-          dim = newDim;
-          $flipbook.turn('size', newDim.width, newDim.height);
-          $flipbook.turn('display', newDim.isMobile ? 'single' : 'double');
+          var currentMobile = getLayoutMode();
+          if (currentMobile !== isMobile) {
+            isMobile = currentMobile;
+            var w = isMobile ? BASE_MOBILE_W : BASE_DESK_W;
+            var h = isMobile ? BASE_MOBILE_H : BASE_DESK_H;
+            $flipbook.turn('size', w, h);
+            $flipbook.turn('display', isMobile ? 'single' : 'double');
+          }
+          applyAdaptiveScale();
           updateIndicators($flipbook.turn('page'));
-        }, 150);
+        }, 80);
       });
 
       /* ---------------------------------------------------------------------
