@@ -1100,9 +1100,152 @@
     }
 
     /* =========================================================================
-       8. THANH CHÂN TRANG ĐIỀU HƯỚNG NHANH
+       8. THANH CHÂN TRANG ĐIỀU HƯỚNG NHANH (DESKTOP & CHUNG)
        ========================================================================= */
     .storybook-footer {
+      position: relative;
+      z-index: 50;
+      width: min(96vw, 1260px);
+      height: 42px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-family: var(--font-ui);
+    }
+
+    .tab-jump-btn {
+      padding: 6px 13px;
+      border-radius: 7px;
+      border: 1px solid rgba(179, 133, 43, 0.4);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--ink-primary);
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .tab-jump-btn:hover {
+      border-color: var(--gold-royal);
+      color: var(--crimson-royal);
+      background: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .tab-jump-btn.active {
+      background: var(--crimson-royal);
+      color: #ffffff;
+      border-color: var(--crimson-royal);
+      font-weight: 700;
+      box-shadow: 0 3px 10px rgba(138, 20, 24, 0.3);
+    }
+
+    #actionNotification {
+      position: fixed;
+      bottom: 58px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(22, 14, 9, 0.95);
+      color: #ffffff;
+      font-family: var(--font-ui);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 99px;
+      border: 1px solid rgba(179, 133, 43, 0.5);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 1000;
+    }
+    #actionNotification.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* =========================================================================
+       9. RESPONSIVE MOBILE & TABLET TỐI ƯU HOÀN HẢO (KHÔNG CUỘN, KHÔNG CHỒNG ĐÈ, DỄ ĐỌC)
+       ========================================================================= */
+    @media (max-width: 768px) {
+      .storybook-header {
+        height: 44px;
+        padding: 0 8px;
+        margin-top: 4px;
+        width: 96vw;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+      }
+      .brand-section {
+        min-width: 0;
+        flex: 0 1 auto;
+        display: flex;
+        align-items: center;
+      }
+      .brand-subheading,
+      .brand-heading,
+      .btn-action .label-text {
+        display: none !important;
+      }
+      .brand-badge {
+        font-size: 9.5px;
+        padding: 3px 7px;
+        letter-spacing: 0.3px;
+        white-space: nowrap;
+      }
+      .nav-center {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .nav-arrow-btn {
+        width: 28px;
+        height: 28px;
+      }
+      .page-indicator-badge {
+        font-size: 10px;
+        padding: 3px 8px;
+        white-space: nowrap;
+      }
+      .tool-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .btn-action {
+        padding: 5px 6px;
+      }
+      .btn-action svg {
+        width: 14px;
+        height: 14px;
+      }
+      #btnPrintA4 {
+        display: none !important; /* In ấn PDF tối ưu cho Desktop */
+      }
+
+      .storybook-stage {
+        padding: 0;
+        width: 100%;
+        overflow: hidden;
+      }
+      .stage-nav-arrow {
+        display: none !important; /* Dùng chạm lướt và chạm mép sách tự nhiên */
+      }
+
+      .book-wrapper {
+        box-shadow: 0 8px 24px rgba(60, 30, 10, 0.28);
+        transform-origin: center center;
+        margin: auto;
+      }
+
+      .storybook-footer {
         height: 38px;
         margin-bottom: 4px;
         overflow-x: auto;
@@ -1114,6 +1257,7 @@
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         -ms-overflow-style: none;
+        width: 100vw;
       }
       .storybook-footer::-webkit-scrollbar {
         display: none;
@@ -1123,20 +1267,6 @@
         padding: 4px 9px;
         white-space: nowrap !important;
         flex-shrink: 0;
-      }
-
-      .storybook-stage {
-        padding: 0;
-      }
-      .stage-nav-arrow {
-        display: none !important;
-      }
-
-      .book-wrapper {
-        box-shadow: 0 8px 24px rgba(60, 30, 10, 0.28);
-        transform-origin: center center;
-        transition: transform 0.15s ease-out;
-        margin: auto;
       }
 
       .page-layout-frame {
@@ -1235,20 +1365,28 @@
       }
       .art-illustration-caption {
         font-size: 7.5px;
-        margin-top: 1px;
+        margin-top: 2px;
         line-height: 1.15;
         text-align: center;
       }
 
+      /* ĐẶC BIỆT CHO HÌNH THANH MINH TRANG 4/5 (Page 5) TRÊN MOBILE:
+         - Rộng 100% tràn đều sang trọng như bản PC
+         - Chiều cao thoáng đẹp (82px-85px), căn khung chuẩn center 20% KHÔNG MẤT ĐẦU KIM TRỌNG */
       .art-illustration-card.landscape-card {
-        max-height: 72px;
-        margin: 2px 0;
+        width: 100%;
+        max-height: 112px;
+        margin: 3px 0;
+        padding: 3px;
       }
       .art-illustration-card.landscape-card img {
-        max-height: 52px;
-        width: auto;
-        max-width: 100%;
+        width: 100%;
+        height: 82px;
+        max-height: 85px;
         object-fit: cover;
+        object-position: center 20%;
+        border-radius: 3px;
+        display: block;
         pointer-events: none !important;
         -webkit-user-drag: none;
       }
@@ -2090,6 +2228,8 @@
         return winW < 768;
       }
 
+      var currentScale = 1.0;
+
       function applyAdaptiveScale() {
         var winW = window.innerWidth || $(window).width();
         var winH = window.innerHeight || $(window).height();
@@ -2100,6 +2240,7 @@
           var availH = winH - 86; // Trừ header (42px) + footer (38px) + an toàn (6px)
           var scale = Math.min(availW / BASE_MOBILE_W, availH / BASE_MOBILE_H);
           scale = Math.min(Math.max(scale, 0.52), 1.00);
+          currentScale = scale;
 
           $('.book-wrapper').css({
             'transform': 'scale(' + scale.toFixed(4) + ')',
@@ -2110,6 +2251,7 @@
           var availH = winH - 100;
           var scale = Math.min(availW / BASE_DESK_W, availH / BASE_DESK_H);
           scale = Math.min(Math.max(scale, 0.60), 1.25);
+          currentScale = scale;
 
           $('.book-wrapper').css({
             'transform': 'scale(' + scale.toFixed(4) + ')',
@@ -2377,8 +2519,17 @@
           var tiltY = (e.clientX / winW - 0.5) * 4.5;
 
           $('.book-wrapper').css({
-            'transform': 'perspective(1400px) rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg)'
+            'transform': 'scale(' + currentScale.toFixed(4) + ') perspective(1400px) rotateX(' + tiltX.toFixed(2) + 'deg) rotateY(' + tiltY.toFixed(2) + 'deg)',
+            'transform-origin': 'center center'
           });
+        });
+      });
+
+      $('.storybook-stage').on('mouseleave', function () {
+        if (isMobile) return;
+        $('.book-wrapper').css({
+          'transform': 'scale(' + currentScale.toFixed(4) + ')',
+          'transform-origin': 'center center'
         });
       });
 
